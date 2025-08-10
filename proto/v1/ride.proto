@@ -1,0 +1,141 @@
+syntax = "proto3";
+
+package proto.v1;
+
+option go_package = "./proto/v1/ride";
+
+import "google/protobuf/timestamp.proto";
+
+service RideService {
+  // RideOffer endpoints
+  rpc CreateOffer(CreateOfferRequest) returns (CreateOfferResponse) {}
+  rpc GetOffer(GetOfferRequest) returns (GetOfferResponse) {}
+  rpc UpdateOffer(UpdateOfferRequest) returns (UpdateOfferResponse) {}
+  rpc DeleteOffer(DeleteOfferRequest) returns (DeleteOfferResponse) {}
+  rpc ListNearbyOffers(ListNearbyOffersRequest) returns (ListNearbyOffersResponse) {}
+  // RideRequest endpoints
+  rpc CreateRequest(CreateRequestRequest) returns (CreateRequestResponse) {}
+  rpc GetRequest(GetRequestRequest) returns (GetRequestResponse) {}
+  rpc UpdateRequestStatus(UpdateRequestStatusRequest) returns (UpdateRequestStatusResponse) {}
+  rpc DeleteRequest(DeleteRequestRequest) returns (DeleteRequestResponse) {}
+  rpc ListNearbyRequests(ListNearbyRequestsRequest) returns (ListNearbyRequestsResponse) {}
+}
+
+
+message RideOffer {
+    string                     id        = 1;
+    string                     driver_id = 2;
+    string                     from_gro  = 3;  //geohash
+    string                     to_geo    = 4;  //geohash
+    string                     fare      = 5;
+    google.protobuf.Timestamp  time      = 6;
+    int32                      seats     = 7;
+    string                     status    = 8;  // "active", "matched", "completed"
+}
+
+
+message RideRequest {
+    string                    id         = 1;                 
+    string                    user_id    = 2;                 
+    string                    from_geo   = 3;               
+    string                    to_geo     = 4;                  
+    google.protobuf.Timestamp time       = 5;                  
+    int32                     seats      = 6;                 
+    string                    status     = 7;     // "active", "matched", "completed"
+}
+
+
+// ---------------- RideOffer RPCs ----------------
+// to create a ride offer
+message CreateOfferRequest {
+    RideOffer offer = 1;
+}
+message CreateOfferResponse {
+    RideOffer offer = 1;
+}
+
+
+// to get the details of particular offer by its id
+message GetOfferRequest {
+    string id = 1;
+}
+message GetOfferResponse {
+    RideOffer offer = 1;
+}
+
+
+//to update offer request
+//sending full rideoffer, serveronly update mutable fields
+message UpdateOfferRequest {
+    RideOffer offer = 1;
+}
+message UpdateOfferResponse {
+    RideOffer offer = 1;     //updated rideoffer
+}
+
+
+// to delete the rideoffer by id
+message DeleteOfferRequest {
+    string id = 1;
+}
+message DeleteOfferResponse {
+    bool success = 1;
+}
+
+
+//to list the neaby offer UpdateRequestStatus
+message ListNearbyOffersRequest {
+    string geohash_prefix = 1;
+    int32 limit = 2;
+}
+message ListNearbyOffersResponse {
+    repeated RideOffer offers = 1;
+}
+
+
+// ---------------- RideRequest RPCs ----------------
+//to create ride request
+message CreateRequestRequest {
+    RideRequest request = 1;
+}
+message CreateRequestResponse {
+    RideRequest request = 1;
+}
+
+
+//to get the particular request by its id
+message GetRequestRequest {
+    string id = 1;
+}
+message GetRequestResponse {
+    RideRequest request = 1;
+}
+
+
+//to update the ride request
+message UpdateRequestStatusRequest {
+    string id     = 1;
+    string status = 2;
+}
+message UpdateRequestStatusResponse {
+    RideRequest request = 1;
+}
+
+
+// to delete the ride request
+message DeleteRequestRequest {
+    string id = 1;
+}
+message DeleteRequestResponse {
+    bool success = 1;
+}
+
+
+//to list all the nearby request by geohash
+message ListNearbyRequestsRequest {
+    string geohash_prefix = 1;
+    int32  limit = 2;
+}
+message ListNearbyRequestsResponse {
+    repeated RideRequest requests = 1;
+}

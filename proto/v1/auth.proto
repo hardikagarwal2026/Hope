@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package proto.v1;
+
+option go_package = "./proto/v1/auth";
+
+// AuthService provides authentication via google id token  and it creates a new account via
+//GoogleSignIn -> ID Token
+service AuthService {
+    rpc Login(LoginRequest) returns (LoginResponse);
+}
+
+
+// login LoginRequest has googleid token obtained by the client
+message LoginRequest {
+    string id_token = 1;
+}
+
+//on login response, it gives jwt along with details extracted after validating googleid token
+//after extracting it creates a account in the db, and sends user details and jwt token as a response
+message LoginResponse {
+    string jwt       =  1;
+    int64  expires_at=  2;
+    string userid    =  3;
+    string email     =  4;
+    string phone     =  5;
+    string photo_url =  6;
+}
+
+// 1,2 3 ... numbers define the order of serialization

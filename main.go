@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
-	"hope/db"
 	"log"
-
+	"hope/config"
 	"github.com/joho/godotenv"
 )
 
@@ -15,8 +14,8 @@ func main() {
 		log.Println(".env not found")
 	}
 
-	dbconfig := db.GetDatabaseConfig()
-	db, err := db.InitDatabase(dbconfig)
+	dbconfig := config.GetDatabaseConfig()
+	db, err := config.InitDatabase(dbconfig)
 	if err != nil {
 		log.Fatalf("Failed to Initialize Database: %v", err)
 	}else{

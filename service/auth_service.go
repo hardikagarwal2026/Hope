@@ -79,7 +79,7 @@ func(s *authService) issueJWT(user *db.User)(string, error){
 		"iat":   time.Now().Unix(),    //issued at, jab isse hua in UNIX format
 		"exp":   time.Now().Add(24 * time.Hour).Unix(),    //expiry time, 24 hr + current time
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)  //method is ES256 along with claims
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)  //method is ES256 along with claims
 	return token.SignedString(jwtSecret)    //returning signed string along with jwt secret key
 }
 

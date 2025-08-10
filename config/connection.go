@@ -1,5 +1,4 @@
-package db
-
+package config
 
 import (
 	"fmt"
@@ -7,6 +6,7 @@ import (
 	"os"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"hope/db"
 )
 
 // DatabaseConfig holds the config values from .env 
@@ -39,23 +39,23 @@ func InitDatabase(config DatabaseConfig) (*gorm.DB, error) {
 		config.Database,
 	)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	if err := db.AutoMigrate(
-		&User{},
-		&RideOffer{},
-		&RideRequest{},
-		&Match{},
-		&ChatMessage{},
-		&Review{},
-		&UserLocation{},
+	if err := database.AutoMigrate(
+		&db.User{},
+		&db.RideOffer{},
+		&db.RideRequest{},
+		&db.Match{},
+		&db.ChatMessage{},
+		&db.Review{},
+		&db.UserLocation{},
 	); err != nil {  
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
 
 	log.Println("Database Connected & Migrated Successfully")
-	return db, nil
+	return database, nil
 }

@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package proto.v1;
+
+option go_package = "./proto/v1/chat";
+
+import "google/protobuf/timestamp.proto";
+
+// ChatService manages ride-specific chat between matched rider and driver.
+service ChatService {
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse) {}
+  rpc ListMessagesByRide(ListMessagesByRideRequest) returns (ListMessagesByRideResponse) {}
+  rpc ListMessagesBySender(ListMessagesBySenderRequest) returns (ListMessagesBySenderResponse) {}
+  rpc ListChatsForUser(ListChatsForUserRequest) returns (ListChatsForUserResponse) {}
+  rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse) {}
+}
+
+
+message ChatMessage {
+  string id = 1;                               
+  string ride_id = 2;                          
+  string sender_id = 3;                        // User.ID of sender (rider/driver)
+  string content = 4;                          // Message text
+  google.protobuf.Timestamp timestamp = 5;     // Server-assigned send time
+}
+
+
+//SendMessage
+message SendMessageRequest {
+  string ride_id = 1;      
+  string sender_id = 2;    
+  string content = 3;      
+}
+message SendMessageResponse {
+  ChatMessage message = 1;
+}
+
+
+//ListMessagesByRide
+message ListMessagesByRideRequest {
+  string ride_id = 1;                       // Ride to fetch messages for
+  int32 limit = 2;                          // Max messages to return (server may clamp)
+  google.protobuf.Timestamp before = 3;     // Pagination: return messages strictly before this timestamp
+}
+message ListMessagesByRideResponse {
+  repeated ChatMessage messages = 1;
+}
+
+
+//ListMessagesBySender
+message ListMessagesBySenderRequest {
+  string sender_id = 1;                     // User whose sent messages to list
+  int32 limit = 2;                          // Max messages
+  google.protobuf.Timestamp before = 3;     // Pagination cursor (timestamp)
+}
+message ListMessagesBySenderResponse {
+  repeated ChatMessage messages = 1;
+}
+
+//ListChatsForUser
+message ListChatsForUserRequest {
+  string user_id = 1;                       // User for whom to fetch chats
+  int32 limit = 2;                          // Max entries
+  google.protobuf.Timestamp before = 3;     // Pagination cursor (timestamp)
+}
+message ListChatsForUserResponse {
+  repeated ChatMessage messages = 1;        // Recent messages across user's rides
+}
+
+
+//DeleteMessage
+message DeleteMessageRequest {
+  string message_id = 1;                    // ID of message to delete
+}
+message DeleteMessageResponse {
+  bool success = 1;
+}

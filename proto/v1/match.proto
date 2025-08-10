@@ -1,0 +1,98 @@
+syntax = "proto3";
+package proto.v1;
+option go_package = "./proto/v1/match";
+import "google/protobuf/timestamp.proto";
+
+
+service MatchService {
+  // Rider jab driver ki ride join karna chahta hai to ye request banega
+  rpc RequestToJoin(RequestToJoinRequest) returns (RequestToJoinResponse) {}
+
+  // Driver pending request ko accept karega to ye call hoga
+  rpc AcceptRequest(AcceptRequestRequest) returns (AcceptRequestResponse) {}
+
+  // Driver pending request ko reject karega to ye wala RPC chalega
+  rpc RejectRequest(RejectRequestRequest) returns (RejectRequestResponse) {}
+
+  // Ride complete hone ke baad match ko completed status dene ke liye
+  rpc CompleteMatch(CompleteMatchRequest) returns (CompleteMatchResponse) {}
+
+  // Koi bhi match ka detail lane ke liye, bas match ka ID pass karo
+  rpc GetMatch(GetMatchRequest) returns (GetMatchResponse) {}
+
+  // Ek particular ride (RideOffer) ke liye saare matches ka list
+  rpc ListMatchesByRide(ListMatchesByRideRequest) returns (ListMatchesByRideResponse) {}
+
+  // Rider ne jo matches initiate kiye hain unka pura list
+  rpc ListMatchesByRider(ListMatchesByRiderRequest) returns (ListMatchesByRiderResponse) {}
+}
+
+
+message Match {
+  string id = 1;    
+  string rider_id = 2;                
+  string driver_id = 3;               
+  string ride_id = 4;    
+  string status = 5;                        // "requested", "accepted", "rejected", "completed"
+  google.protobuf.Timestamp created_at = 6; // Match create hone ka time
+}
+
+
+// ---------------- RPC Messages ----------------
+
+// Rider jab ek ride join karna chahta hai, to ye request bhejta hai
+message RequestToJoinRequest {
+  // Rider_id, driver_id, ride_id client se aayega; status aur created_at server set karega
+  Match match = 1;
+}
+message RequestToJoinResponse {
+  Match match = 1; // Server se status="requested" ke sath match return hoga
+}
+
+// Request accept karne ka request
+message AcceptRequestRequest {
+  string match_id = 1;
+}
+message AcceptRequestResponse {
+  Match match = 1; // Status ab "accepted" ho jayega
+}
+
+// Request reject karne ka request
+message RejectRequestRequest {
+  string match_id = 1;
+}
+message RejectRequestResponse {
+  Match match = 1; // Status ab "rejected" ho jayega
+}
+
+// Ride complete hone ke baad match ko complete mark karne ka request
+message CompleteMatchRequest {
+  string match_id = 1;
+}
+message CompleteMatchResponse {
+  Match match = 1; // Status ab "completed" ho jayega
+}
+
+// Match details nikalne ka request
+message GetMatchRequest {
+  string match_id = 1;
+}
+message GetMatchResponse {
+  Match match = 1;
+}
+
+// Ek specific ride ke saare matches ka request
+message ListMatchesByRideRequest {
+  string ride_id = 1;
+}
+message ListMatchesByRideResponse {
+  repeated Match matches = 1; // Saare matches ka list
+}
+
+// Ek rider ke initiate kiye huye saare matches ka request
+message ListMatchesByRiderRequest {
+  string rider_id = 1;
+}
+message ListMatchesByRiderResponse {
+  repeated Match matches = 1; // Saare matches ka list
+}

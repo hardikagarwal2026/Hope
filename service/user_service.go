@@ -21,7 +21,6 @@ type userService struct{
     userRepo repository.UserRepository
 }
 
-
 func NewUserService(userRepo repository.UserRepository) UserService{
     return &userService{userRepo: userRepo}
 }

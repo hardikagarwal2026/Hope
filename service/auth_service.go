@@ -5,11 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"hope/config"
 	"hope/db"
 	"hope/repository"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 	"github.com/golang-jwt/jwt"
@@ -30,7 +28,7 @@ type GoogleTokenInfo struct {
 }
 
 
-var jwtSecret = os.Getenv("JWT_SECRET")
+// var jwtSecret = os.Getenv("JWT_SECRET")
 
 type AuthService interface{
 	Login(ctx context.Context, idToken string) (string, error)
@@ -45,8 +43,8 @@ type authService struct {
 }
 
 // Constructor to get create instance of AuthService
-func NewAuthService(userrepo repository.UserRepository, allowedDomains map[string]struct{}, jwtSecret string, googleClientID string) AuthService {
-	return &authService{userrepo: userrepo, allowedDomains: config.GetAllowedDomains(), jwtSecret: []byte(jwtSecret), googleClientID: googleClientID}
+func NewAuthService(userrepo repository.UserRepository, allowedDomains map[string]struct{}, jwtSecret []byte, googleClientID string) AuthService {
+	return &authService{userrepo: userrepo, allowedDomains: allowedDomains, jwtSecret: jwtSecret, googleClientID: googleClientID}
 }
 
 // to validate google id token(it comes from frontend) and getting googletoken info
@@ -79,8 +77,8 @@ func(s *authService) issueJWT(user *db.User)(string, error){
 		"iat":   time.Now().Unix(),    //issued at, jab isse hua in UNIX format
 		"exp":   time.Now().Add(24 * time.Hour).Unix(),    //expiry time, 24 hr + current time
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)  //method is ES256 along with claims
-	return token.SignedString(jwtSecret)    //returning signed string along with jwt secret key
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)  //method is HS256 along with claims
+	return token.SignedString(s.jwtSecret)    //returning signed string along with jwt secret key
 }
 
 func (s authService)Login(ctx context.Context, idToken string) (string, error){

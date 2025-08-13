@@ -3,7 +3,6 @@ package config
 import (
 	"os"
 	"strings"
-
 )
 
 // to get the map of allowed domains, key is string and value type is empty struct
@@ -28,9 +27,15 @@ func GetAllowedDomains() map[string]struct{} {
 	}
 
 	return allowed
-
 }
 
+func GetJWTSecret() []byte {
+	jwtSecret := os.Getenv("JWT_SECRET")
+	return []byte(jwtSecret)
+}
 
+func ProvideGoogleClientID() string {
+    return os.Getenv("GOOGLE_CLIENT_ID")
+}
 
 

@@ -22,6 +22,9 @@ type chatMessageRepository struct{
 	db *gorm.DB
 }
 
+func NewChatMessageRepository(db *gorm.DB) ChatMessageRepository {
+	return &chatMessageRepository{db: db}
+}
 
 func (r *chatMessageRepository) Create(ctx context.Context, msg *db.ChatMessage) error {
 	return r.db.WithContext(ctx).Create(msg).Error

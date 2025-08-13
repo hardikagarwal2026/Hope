@@ -19,6 +19,10 @@ type userLocationRepository struct {
     db *gorm.DB
 }
 
+func NewUserLocationRepository(db *gorm.DB) UserLocationRepository {
+    return &userLocationRepository{db: db}
+}
+
 func (r *userLocationRepository) Upsert(ctx context.Context, loc *db.UserLocation) error {
     loc.Updatedat = time.Now()
     return r.db.WithContext(ctx).

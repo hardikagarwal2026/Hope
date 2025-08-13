@@ -19,10 +19,6 @@ type rideOfferRepository struct{
 	db *gorm.DB // gorm.DB object, it embeds a pointer to the gorm DB object
 }
 
-func NewrideOfferRepository(db *gorm.DB) RideOfferRepository {
-	return &rideOfferRepository{db: db}
-}
-
 
 // to save the new ride offer to the database
 func (r *rideOfferRepository) Create(ctx context.Context, offer *db.RideOffer) error {

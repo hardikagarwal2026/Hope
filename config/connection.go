@@ -2,14 +2,15 @@ package config
 
 import (
 	"fmt"
+	"hope/db"
 	"log"
 	"os"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"hope/db"
 )
 
-// DatabaseConfig holds the config values from .env 
+// DatabaseConfig holds the config values from .env
 type DatabaseConfig struct {
 	Host     string
 	Port     string
@@ -38,7 +39,7 @@ func InitDatabase(config DatabaseConfig) (*gorm.DB, error) {
 		config.Port,
 		config.Database,
 	)
-
+	fmt.Println("Connecting to DB:", dsn)
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
@@ -52,7 +53,7 @@ func InitDatabase(config DatabaseConfig) (*gorm.DB, error) {
 		&db.ChatMessage{},
 		&db.Review{},
 		&db.UserLocation{},
-	); err != nil {  
+	); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
 

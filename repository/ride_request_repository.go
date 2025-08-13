@@ -21,11 +21,6 @@ type rideRequestRepository struct {
 	db *gorm.DB
 }
 
-
-func NewRideRequestRepository(db *gorm.DB) RideRequestRepository {
-	return &rideRequestRepository{db: db}
-}
-
 func (r *rideRequestRepository) Create(ctx context.Context, req *db.RideRequest) error{
 	return r.db.WithContext(ctx).Create(req).Error
 }

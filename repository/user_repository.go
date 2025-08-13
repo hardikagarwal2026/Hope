@@ -22,10 +22,6 @@ type userRepository struct{
 	db *gorm.DB  //gorm DB object
 }
 
-// Constructor Function- to create an instance of the public interface
-func NewUserRepository(db *gorm.DB) UserRepository {
-    return &userRepository{db: db}
-}
 
 func (r *userRepository) Create(ctx context.Context, user *db.User) error {
 	return r.db.WithContext(ctx).Create(user).Error

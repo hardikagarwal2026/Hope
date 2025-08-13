@@ -19,9 +19,6 @@ type matchRepository struct{
 	db *gorm.DB
 }
 
-func NewMatchRepository(db *gorm.DB) MatchRepository{
-	return &matchRepository{db: db}
-}
 
 func (r *matchRepository) Create(ctx context.Context, match *db.Match)error{
 	return r.db.WithContext(ctx).Create(match).Error

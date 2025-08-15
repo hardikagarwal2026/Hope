@@ -35,7 +35,7 @@ func main() {
 	authConfig := middleware.Config{
 		JWTSecret: []byte(os.Getenv("JWT_SECRET")),
 		PublicMethods: map[string]bool{
-			"/auth.v1.AuthService/Login": true,
+			"/proto.v1.AuthService/Login": true,
 		},
 	}
 

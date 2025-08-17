@@ -71,11 +71,9 @@ func (x *LoginRequest) GetIdToken() string {
 type LoginResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Jwt           string                 `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
-	ExpiresAt     int64                  `protobuf:"varint,2,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
-	Userid        string                 `protobuf:"bytes,3,opt,name=userid,proto3" json:"userid,omitempty"`
-	Email         string                 `protobuf:"bytes,4,opt,name=email,proto3" json:"email,omitempty"`
-	Phone         string                 `protobuf:"bytes,5,opt,name=phone,proto3" json:"phone,omitempty"`
-	PhotoUrl      string                 `protobuf:"bytes,6,opt,name=photo_url,json=photoUrl,proto3" json:"photo_url,omitempty"`
+	Userid        string                 `protobuf:"bytes,2,opt,name=userid,proto3" json:"userid,omitempty"`
+	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
+	PhotoUrl      string                 `protobuf:"bytes,4,opt,name=photo_url,json=photoUrl,proto3" json:"photo_url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -117,13 +115,6 @@ func (x *LoginResponse) GetJwt() string {
 	return ""
 }
 
-func (x *LoginResponse) GetExpiresAt() int64 {
-	if x != nil {
-		return x.ExpiresAt
-	}
-	return 0
-}
-
 func (x *LoginResponse) GetUserid() string {
 	if x != nil {
 		return x.Userid
@@ -134,13 +125,6 @@ func (x *LoginResponse) GetUserid() string {
 func (x *LoginResponse) GetEmail() string {
 	if x != nil {
 		return x.Email
-	}
-	return ""
-}
-
-func (x *LoginResponse) GetPhone() string {
-	if x != nil {
-		return x.Phone
 	}
 	return ""
 }
@@ -158,15 +142,12 @@ const file_proto_v1_auth_proto_rawDesc = "" +
 	"\n" +
 	"\x13proto/v1/auth.proto\x12\bproto.v1\")\n" +
 	"\fLoginRequest\x12\x19\n" +
-	"\bid_token\x18\x01 \x01(\tR\aidToken\"\xa1\x01\n" +
+	"\bid_token\x18\x01 \x01(\tR\aidToken\"l\n" +
 	"\rLoginResponse\x12\x10\n" +
-	"\x03jwt\x18\x01 \x01(\tR\x03jwt\x12\x1d\n" +
-	"\n" +
-	"expires_at\x18\x02 \x01(\x03R\texpiresAt\x12\x16\n" +
-	"\x06userid\x18\x03 \x01(\tR\x06userid\x12\x14\n" +
-	"\x05email\x18\x04 \x01(\tR\x05email\x12\x14\n" +
-	"\x05phone\x18\x05 \x01(\tR\x05phone\x12\x1b\n" +
-	"\tphoto_url\x18\x06 \x01(\tR\bphotoUrl2G\n" +
+	"\x03jwt\x18\x01 \x01(\tR\x03jwt\x12\x16\n" +
+	"\x06userid\x18\x02 \x01(\tR\x06userid\x12\x14\n" +
+	"\x05email\x18\x03 \x01(\tR\x05email\x12\x1b\n" +
+	"\tphoto_url\x18\x04 \x01(\tR\bphotoUrl2G\n" +
 	"\vAuthService\x128\n" +
 	"\x05Login\x12\x16.proto.v1.LoginRequest\x1a\x17.proto.v1.LoginResponseB\x11Z\x0f./proto/v1/authb\x06proto3"
 

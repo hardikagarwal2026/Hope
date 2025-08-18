@@ -3,21 +3,28 @@ package service
 import (
 	"context"
 	"errors"
+	"strings"
+	"time"
+	"github.com/google/uuid"
 	"hope/db"
 	"hope/repository"
-	"time"
-) 
+)
+
+var (
+	errChatInvalidFields = errors.New("ride_id, sender_id and content are required")
+	errChatNotAllowed    = errors.New("user not allowed to chat for this ride")
+)
 
 type ChatService interface {
 	SendMessage(ctx context.Context, msg *db.ChatMessage) error
-    ListMessagesByRide(ctx context.Context, rideID string, limit int, before time.Time) ([]db.ChatMessage, error)
-    ListMessagesBySender(ctx context.Context, senderID string, limit int, before time.Time) ([]db.ChatMessage, error)
-    ListChatsForUser(ctx context.Context, userID string, limit int, before time.Time) ([]db.ChatMessage, error)
-    DeleteMessage(ctx context.Context, id string) error
+	ListMessagesByRide(ctx context.Context, rideID string, limit int, before time.Time) ([]db.ChatMessage, error)
+	ListMessagesBySender(ctx context.Context, senderID string, limit int, before time.Time) ([]db.ChatMessage, error)
+	ListChatsForUser(ctx context.Context, userID string, limit int, before time.Time) ([]db.ChatMessage, error)
+	DeleteMessage(ctx context.Context, id string) error
 }
 
 type chatService struct {
-	chatrepo repository.ChatMessageRepository
+	chatrepo  repository.ChatMessageRepository
 	matchrepo repository.MatchRepository
 }
 
@@ -26,58 +33,69 @@ func NewChatService(chatrepo repository.ChatMessageRepository, matchrepo reposit
 }
 
 func (s chatService) SendMessage(ctx context.Context, msg *db.ChatMessage) error {
-	if msg.RideID == "" || msg.SenderID == "" || msg.Content == "" {
-		return errors.New("rideID, senderID and content required")
+	if msg == nil {
+		return errChatInvalidFields
 	}
+	msg.ID = uuid.New().String()
+	msg.RideID = strings.TrimSpace(msg.RideID)
+	msg.SenderID = strings.TrimSpace(msg.SenderID)
+	msg.Content = strings.TrimSpace(msg.Content)
 
-	//checking only matched users for this ride can chat
-	matches, err := s.matchrepo.FindByRideID(ctx, msg.RideID) //getting the match by rideID
-	if err!= nil{
+	if msg.RideID == "" || msg.SenderID == "" || msg.Content == "" {
+		return errChatInvalidFields
+	}
+	matches, err := s.matchrepo.FindByRideID(ctx, msg.RideID)
+	if err != nil {
 		return err
 	}
-
-	//default allowed false
-	//then checking 
 	allowed := false
-	for _, m := range matches{
-		// both ridder and rider can be a sender in the chat
-		/// AND match status must be accepted or completed
-		if (m.RiderID == msg.SenderID || m.DriverID == msg.SenderID) && (m.Status == "accepted" || m.Status == "completed") {
+	for _, m := range matches {
+		if (m.RiderID == msg.SenderID || m.DriverID == msg.SenderID) &&
+			(m.Status == "accepted" || m.Status == "completed") {
 			allowed = true
 			break
 		}
 	}
-	if !allowed{
-		return errors.New("user notallowed to chat for this ride")
+	if !allowed {
+		return errChatNotAllowed
 	}
-
-	//if alllowed then sending message
-	msg.Timestamp = time.Now()
+	msg.Timestamp = time.Now().UTC()
 	return s.chatrepo.Create(ctx, msg)
-
 }
 
-// list messages asssociated with a particular ride using rideID between rider and driver both
-func (s chatService) ListMessagesByRide(ctx context.Context, rideID string, limit int, before time.Time) ([]db.ChatMessage, error){
+func (s chatService) ListMessagesByRide(ctx context.Context, rideID string, limit int, before time.Time) ([]db.ChatMessage, error) {
+	rideID = strings.TrimSpace(rideID)
+	if before.IsZero() {
+		before = time.Now().UTC()
+	}
+	if limit <= 0 {
+		limit = 50
+	}
 	return s.chatrepo.ListByRide(ctx, rideID, limit, before)
 }
 
-//list all the messages by sender by senderID, whether its anyone rider or driver
-func (s chatService)ListMessagesBySender(ctx context.Context, senderID string, limit int, before time.Time) ([]db.ChatMessage, error){
+func (s chatService) ListMessagesBySender(ctx context.Context, senderID string, limit int, before time.Time) ([]db.ChatMessage, error) {
+	senderID = strings.TrimSpace(senderID)
+	if before.IsZero() {
+		before = time.Now().UTC()
+	}
+	if limit <= 0 {
+		limit = 50
+	}
 	return s.chatrepo.ListBySender(ctx, senderID, limit, before)
 }
 
-//list all the chat for user
-//have to go through again through this function
-func (s chatService) ListChatsForUser(ctx context.Context, userID string, limit int, before time.Time) ([]db.ChatMessage, error){
+func (s chatService) ListChatsForUser(ctx context.Context, userID string, limit int, before time.Time) ([]db.ChatMessage, error) {
+	userID = strings.TrimSpace(userID)
+	if before.IsZero() {
+		before = time.Now().UTC()
+	}
+	if limit <= 0 {
+		limit = 50
+	}
 	return s.chatrepo.ListChatsForUser(ctx, userID, limit, before)
-
 }
 
-// to delete the particular chat by its id
 func (s chatService) DeleteMessage(ctx context.Context, id string) error {
-	return s.chatrepo.Delete(ctx, id)
+	return s.chatrepo.Delete(ctx, strings.TrimSpace(id))
 }
-
-
-

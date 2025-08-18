@@ -26,26 +26,21 @@ const (
 	MatchService_GetMatch_FullMethodName           = "/proto.v1.MatchService/GetMatch"
 	MatchService_ListMatchesByRide_FullMethodName  = "/proto.v1.MatchService/ListMatchesByRide"
 	MatchService_ListMatchesByRider_FullMethodName = "/proto.v1.MatchService/ListMatchesByRider"
+	MatchService_ListMyMatches_FullMethodName      = "/proto.v1.MatchService/ListMyMatches"
 )
 
 // MatchServiceClient is the client API for MatchService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MatchServiceClient interface {
-	// Rider jab driver ki ride join karna chahta hai to ye request banega
 	RequestToJoin(ctx context.Context, in *RequestToJoinRequest, opts ...grpc.CallOption) (*RequestToJoinResponse, error)
-	// Driver pending request ko accept karega to ye call hoga
 	AcceptRequest(ctx context.Context, in *AcceptRequestRequest, opts ...grpc.CallOption) (*AcceptRequestResponse, error)
-	// Driver pending request ko reject karega to ye wala RPC chalega
 	RejectRequest(ctx context.Context, in *RejectRequestRequest, opts ...grpc.CallOption) (*RejectRequestResponse, error)
-	// Ride complete hone ke baad match ko completed status dene ke liye
 	CompleteMatch(ctx context.Context, in *CompleteMatchRequest, opts ...grpc.CallOption) (*CompleteMatchResponse, error)
-	// Koi bhi match ka detail lane ke liye, bas match ka ID pass karo
 	GetMatch(ctx context.Context, in *GetMatchRequest, opts ...grpc.CallOption) (*GetMatchResponse, error)
-	// Ek particular ride (RideOffer) ke liye saare matches ka list
 	ListMatchesByRide(ctx context.Context, in *ListMatchesByRideRequest, opts ...grpc.CallOption) (*ListMatchesByRideResponse, error)
-	// Rider ne jo matches initiate kiye hain unka pura list
 	ListMatchesByRider(ctx context.Context, in *ListMatchesByRiderRequest, opts ...grpc.CallOption) (*ListMatchesByRiderResponse, error)
+	ListMyMatches(ctx context.Context, in *ListMyMatchesRequest, opts ...grpc.CallOption) (*ListMyMatchesResponse, error)
 }
 
 type matchServiceClient struct {
@@ -126,24 +121,28 @@ func (c *matchServiceClient) ListMatchesByRider(ctx context.Context, in *ListMat
 	return out, nil
 }
 
+func (c *matchServiceClient) ListMyMatches(ctx context.Context, in *ListMyMatchesRequest, opts ...grpc.CallOption) (*ListMyMatchesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMyMatchesResponse)
+	err := c.cc.Invoke(ctx, MatchService_ListMyMatches_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MatchServiceServer is the server API for MatchService service.
 // All implementations must embed UnimplementedMatchServiceServer
 // for forward compatibility.
 type MatchServiceServer interface {
-	// Rider jab driver ki ride join karna chahta hai to ye request banega
 	RequestToJoin(context.Context, *RequestToJoinRequest) (*RequestToJoinResponse, error)
-	// Driver pending request ko accept karega to ye call hoga
 	AcceptRequest(context.Context, *AcceptRequestRequest) (*AcceptRequestResponse, error)
-	// Driver pending request ko reject karega to ye wala RPC chalega
 	RejectRequest(context.Context, *RejectRequestRequest) (*RejectRequestResponse, error)
-	// Ride complete hone ke baad match ko completed status dene ke liye
 	CompleteMatch(context.Context, *CompleteMatchRequest) (*CompleteMatchResponse, error)
-	// Koi bhi match ka detail lane ke liye, bas match ka ID pass karo
 	GetMatch(context.Context, *GetMatchRequest) (*GetMatchResponse, error)
-	// Ek particular ride (RideOffer) ke liye saare matches ka list
 	ListMatchesByRide(context.Context, *ListMatchesByRideRequest) (*ListMatchesByRideResponse, error)
-	// Rider ne jo matches initiate kiye hain unka pura list
 	ListMatchesByRider(context.Context, *ListMatchesByRiderRequest) (*ListMatchesByRiderResponse, error)
+	ListMyMatches(context.Context, *ListMyMatchesRequest) (*ListMyMatchesResponse, error)
 	mustEmbedUnimplementedMatchServiceServer()
 }
 
@@ -174,6 +173,9 @@ func (UnimplementedMatchServiceServer) ListMatchesByRide(context.Context, *ListM
 }
 func (UnimplementedMatchServiceServer) ListMatchesByRider(context.Context, *ListMatchesByRiderRequest) (*ListMatchesByRiderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListMatchesByRider not implemented")
+}
+func (UnimplementedMatchServiceServer) ListMyMatches(context.Context, *ListMyMatchesRequest) (*ListMyMatchesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMyMatches not implemented")
 }
 func (UnimplementedMatchServiceServer) mustEmbedUnimplementedMatchServiceServer() {}
 func (UnimplementedMatchServiceServer) testEmbeddedByValue()                      {}
@@ -322,6 +324,24 @@ func _MatchService_ListMatchesByRider_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MatchService_ListMyMatches_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMyMatchesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MatchServiceServer).ListMyMatches(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MatchService_ListMyMatches_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MatchServiceServer).ListMyMatches(ctx, req.(*ListMyMatchesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MatchService_ServiceDesc is the grpc.ServiceDesc for MatchService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -356,6 +376,10 @@ var MatchService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListMatchesByRider",
 			Handler:    _MatchService_ListMatchesByRider_Handler,
+		},
+		{
+			MethodName: "ListMyMatches",
+			Handler:    _MatchService_ListMyMatches_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

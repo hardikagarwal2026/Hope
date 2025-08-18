@@ -7,13 +7,12 @@
 package match
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -29,8 +28,8 @@ type Match struct {
 	RiderId       string                 `protobuf:"bytes,2,opt,name=rider_id,json=riderId,proto3" json:"rider_id,omitempty"`
 	DriverId      string                 `protobuf:"bytes,3,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
 	RideId        string                 `protobuf:"bytes,4,opt,name=ride_id,json=rideId,proto3" json:"ride_id,omitempty"`
-	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`                        // "requested", "accepted", "rejected", "completed"
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"` // Match create hone ka time
+	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -107,11 +106,9 @@ func (x *Match) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-// Rider jab ek ride join karna chahta hai, to ye request bhejta hai
 type RequestToJoinRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Rider_id, driver_id, ride_id client se aayega; status aur created_at server set karega
-	Match         *Match `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RideId        string                 `protobuf:"bytes,1,opt,name=ride_id,json=rideId,proto3" json:"ride_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,16 +143,16 @@ func (*RequestToJoinRequest) Descriptor() ([]byte, []int) {
 	return file_proto_v1_match_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *RequestToJoinRequest) GetMatch() *Match {
+func (x *RequestToJoinRequest) GetRideId() string {
 	if x != nil {
-		return x.Match
+		return x.RideId
 	}
-	return nil
+	return ""
 }
 
 type RequestToJoinResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Match         *Match                 `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"` // Server se status="requested" ke sath match return hoga
+	Match         *Match                 `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -197,7 +194,6 @@ func (x *RequestToJoinResponse) GetMatch() *Match {
 	return nil
 }
 
-// Request accept karne ka request
 type AcceptRequestRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	MatchId       string                 `protobuf:"bytes,1,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
@@ -244,7 +240,7 @@ func (x *AcceptRequestRequest) GetMatchId() string {
 
 type AcceptRequestResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Match         *Match                 `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"` // Status ab "accepted" ho jayega
+	Match         *Match                 `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -286,7 +282,6 @@ func (x *AcceptRequestResponse) GetMatch() *Match {
 	return nil
 }
 
-// Request reject karne ka request
 type RejectRequestRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	MatchId       string                 `protobuf:"bytes,1,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
@@ -333,7 +328,7 @@ func (x *RejectRequestRequest) GetMatchId() string {
 
 type RejectRequestResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Match         *Match                 `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"` // Status ab "rejected" ho jayega
+	Match         *Match                 `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -375,7 +370,6 @@ func (x *RejectRequestResponse) GetMatch() *Match {
 	return nil
 }
 
-// Ride complete hone ke baad match ko complete mark karne ka request
 type CompleteMatchRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	MatchId       string                 `protobuf:"bytes,1,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
@@ -422,7 +416,7 @@ func (x *CompleteMatchRequest) GetMatchId() string {
 
 type CompleteMatchResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Match         *Match                 `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"` // Status ab "completed" ho jayega
+	Match         *Match                 `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -464,7 +458,6 @@ func (x *CompleteMatchResponse) GetMatch() *Match {
 	return nil
 }
 
-// Match details nikalne ka request
 type GetMatchRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	MatchId       string                 `protobuf:"bytes,1,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
@@ -553,7 +546,6 @@ func (x *GetMatchResponse) GetMatch() *Match {
 	return nil
 }
 
-// Ek specific ride ke saare matches ka request
 type ListMatchesByRideRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	RideId        string                 `protobuf:"bytes,1,opt,name=ride_id,json=rideId,proto3" json:"ride_id,omitempty"`
@@ -600,7 +592,7 @@ func (x *ListMatchesByRideRequest) GetRideId() string {
 
 type ListMatchesByRideResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Matches       []*Match               `protobuf:"bytes,1,rep,name=matches,proto3" json:"matches,omitempty"` // Saare matches ka list
+	Matches       []*Match               `protobuf:"bytes,1,rep,name=matches,proto3" json:"matches,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -642,7 +634,6 @@ func (x *ListMatchesByRideResponse) GetMatches() []*Match {
 	return nil
 }
 
-// Ek rider ke initiate kiye huye saare matches ka request
 type ListMatchesByRiderRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	RiderId       string                 `protobuf:"bytes,1,opt,name=rider_id,json=riderId,proto3" json:"rider_id,omitempty"`
@@ -689,7 +680,7 @@ func (x *ListMatchesByRiderRequest) GetRiderId() string {
 
 type ListMatchesByRiderResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Matches       []*Match               `protobuf:"bytes,1,rep,name=matches,proto3" json:"matches,omitempty"` // Saare matches ka list
+	Matches       []*Match               `protobuf:"bytes,1,rep,name=matches,proto3" json:"matches,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -731,6 +722,86 @@ func (x *ListMatchesByRiderResponse) GetMatches() []*Match {
 	return nil
 }
 
+type ListMyMatchesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMyMatchesRequest) Reset() {
+	*x = ListMyMatchesRequest{}
+	mi := &file_proto_v1_match_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMyMatchesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMyMatchesRequest) ProtoMessage() {}
+
+func (x *ListMyMatchesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_v1_match_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMyMatchesRequest.ProtoReflect.Descriptor instead.
+func (*ListMyMatchesRequest) Descriptor() ([]byte, []int) {
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{15}
+}
+
+type ListMyMatchesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Matches       []*Match               `protobuf:"bytes,1,rep,name=matches,proto3" json:"matches,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMyMatchesResponse) Reset() {
+	*x = ListMyMatchesResponse{}
+	mi := &file_proto_v1_match_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMyMatchesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMyMatchesResponse) ProtoMessage() {}
+
+func (x *ListMyMatchesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_v1_match_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMyMatchesResponse.ProtoReflect.Descriptor instead.
+func (*ListMyMatchesResponse) Descriptor() ([]byte, []int) {
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *ListMyMatchesResponse) GetMatches() []*Match {
+	if x != nil {
+		return x.Matches
+	}
+	return nil
+}
+
 var File_proto_v1_match_proto protoreflect.FileDescriptor
 
 const file_proto_v1_match_proto_rawDesc = "" +
@@ -743,9 +814,9 @@ const file_proto_v1_match_proto_rawDesc = "" +
 	"\aride_id\x18\x04 \x01(\tR\x06rideId\x12\x16\n" +
 	"\x06status\x18\x05 \x01(\tR\x06status\x129\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"=\n" +
-	"\x14RequestToJoinRequest\x12%\n" +
-	"\x05match\x18\x01 \x01(\v2\x0f.proto.v1.MatchR\x05match\">\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"/\n" +
+	"\x14RequestToJoinRequest\x12\x17\n" +
+	"\aride_id\x18\x01 \x01(\tR\x06rideId\">\n" +
 	"\x15RequestToJoinResponse\x12%\n" +
 	"\x05match\x18\x01 \x01(\v2\x0f.proto.v1.MatchR\x05match\"1\n" +
 	"\x14AcceptRequestRequest\x12\x19\n" +
@@ -771,15 +842,19 @@ const file_proto_v1_match_proto_rawDesc = "" +
 	"\x19ListMatchesByRiderRequest\x12\x19\n" +
 	"\brider_id\x18\x01 \x01(\tR\ariderId\"G\n" +
 	"\x1aListMatchesByRiderResponse\x12)\n" +
-	"\amatches\x18\x01 \x03(\v2\x0f.proto.v1.MatchR\amatches2\xe6\x04\n" +
-	"\fMatchService\x12R\n" +
-	"\rRequestToJoin\x12\x1e.proto.v1.RequestToJoinRequest\x1a\x1f.proto.v1.RequestToJoinResponse\"\x00\x12R\n" +
-	"\rAcceptRequest\x12\x1e.proto.v1.AcceptRequestRequest\x1a\x1f.proto.v1.AcceptRequestResponse\"\x00\x12R\n" +
-	"\rRejectRequest\x12\x1e.proto.v1.RejectRequestRequest\x1a\x1f.proto.v1.RejectRequestResponse\"\x00\x12R\n" +
-	"\rCompleteMatch\x12\x1e.proto.v1.CompleteMatchRequest\x1a\x1f.proto.v1.CompleteMatchResponse\"\x00\x12C\n" +
-	"\bGetMatch\x12\x19.proto.v1.GetMatchRequest\x1a\x1a.proto.v1.GetMatchResponse\"\x00\x12^\n" +
-	"\x11ListMatchesByRide\x12\".proto.v1.ListMatchesByRideRequest\x1a#.proto.v1.ListMatchesByRideResponse\"\x00\x12a\n" +
-	"\x12ListMatchesByRider\x12#.proto.v1.ListMatchesByRiderRequest\x1a$.proto.v1.ListMatchesByRiderResponse\"\x00B\x12Z\x10./proto/v1/matchb\x06proto3"
+	"\amatches\x18\x01 \x03(\v2\x0f.proto.v1.MatchR\amatches\"\x16\n" +
+	"\x14ListMyMatchesRequest\"B\n" +
+	"\x15ListMyMatchesResponse\x12)\n" +
+	"\amatches\x18\x01 \x03(\v2\x0f.proto.v1.MatchR\amatches2\xaa\x05\n" +
+	"\fMatchService\x12P\n" +
+	"\rRequestToJoin\x12\x1e.proto.v1.RequestToJoinRequest\x1a\x1f.proto.v1.RequestToJoinResponse\x12P\n" +
+	"\rAcceptRequest\x12\x1e.proto.v1.AcceptRequestRequest\x1a\x1f.proto.v1.AcceptRequestResponse\x12P\n" +
+	"\rRejectRequest\x12\x1e.proto.v1.RejectRequestRequest\x1a\x1f.proto.v1.RejectRequestResponse\x12P\n" +
+	"\rCompleteMatch\x12\x1e.proto.v1.CompleteMatchRequest\x1a\x1f.proto.v1.CompleteMatchResponse\x12A\n" +
+	"\bGetMatch\x12\x19.proto.v1.GetMatchRequest\x1a\x1a.proto.v1.GetMatchResponse\x12\\\n" +
+	"\x11ListMatchesByRide\x12\".proto.v1.ListMatchesByRideRequest\x1a#.proto.v1.ListMatchesByRideResponse\x12_\n" +
+	"\x12ListMatchesByRider\x12#.proto.v1.ListMatchesByRiderRequest\x1a$.proto.v1.ListMatchesByRiderResponse\x12P\n" +
+	"\rListMyMatches\x12\x1e.proto.v1.ListMyMatchesRequest\x1a\x1f.proto.v1.ListMyMatchesResponseB\x12Z\x10./proto/v1/matchb\x06proto3"
 
 var (
 	file_proto_v1_match_proto_rawDescOnce sync.Once
@@ -793,7 +868,7 @@ func file_proto_v1_match_proto_rawDescGZIP() []byte {
 	return file_proto_v1_match_proto_rawDescData
 }
 
-var file_proto_v1_match_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_proto_v1_match_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_proto_v1_match_proto_goTypes = []any{
 	(*Match)(nil),                      // 0: proto.v1.Match
 	(*RequestToJoinRequest)(nil),       // 1: proto.v1.RequestToJoinRequest
@@ -810,18 +885,20 @@ var file_proto_v1_match_proto_goTypes = []any{
 	(*ListMatchesByRideResponse)(nil),  // 12: proto.v1.ListMatchesByRideResponse
 	(*ListMatchesByRiderRequest)(nil),  // 13: proto.v1.ListMatchesByRiderRequest
 	(*ListMatchesByRiderResponse)(nil), // 14: proto.v1.ListMatchesByRiderResponse
-	(*timestamppb.Timestamp)(nil),      // 15: google.protobuf.Timestamp
+	(*ListMyMatchesRequest)(nil),       // 15: proto.v1.ListMyMatchesRequest
+	(*ListMyMatchesResponse)(nil),      // 16: proto.v1.ListMyMatchesResponse
+	(*timestamppb.Timestamp)(nil),      // 17: google.protobuf.Timestamp
 }
 var file_proto_v1_match_proto_depIdxs = []int32{
-	15, // 0: proto.v1.Match.created_at:type_name -> google.protobuf.Timestamp
-	0,  // 1: proto.v1.RequestToJoinRequest.match:type_name -> proto.v1.Match
-	0,  // 2: proto.v1.RequestToJoinResponse.match:type_name -> proto.v1.Match
-	0,  // 3: proto.v1.AcceptRequestResponse.match:type_name -> proto.v1.Match
-	0,  // 4: proto.v1.RejectRequestResponse.match:type_name -> proto.v1.Match
-	0,  // 5: proto.v1.CompleteMatchResponse.match:type_name -> proto.v1.Match
-	0,  // 6: proto.v1.GetMatchResponse.match:type_name -> proto.v1.Match
-	0,  // 7: proto.v1.ListMatchesByRideResponse.matches:type_name -> proto.v1.Match
-	0,  // 8: proto.v1.ListMatchesByRiderResponse.matches:type_name -> proto.v1.Match
+	17, // 0: proto.v1.Match.created_at:type_name -> google.protobuf.Timestamp
+	0,  // 1: proto.v1.RequestToJoinResponse.match:type_name -> proto.v1.Match
+	0,  // 2: proto.v1.AcceptRequestResponse.match:type_name -> proto.v1.Match
+	0,  // 3: proto.v1.RejectRequestResponse.match:type_name -> proto.v1.Match
+	0,  // 4: proto.v1.CompleteMatchResponse.match:type_name -> proto.v1.Match
+	0,  // 5: proto.v1.GetMatchResponse.match:type_name -> proto.v1.Match
+	0,  // 6: proto.v1.ListMatchesByRideResponse.matches:type_name -> proto.v1.Match
+	0,  // 7: proto.v1.ListMatchesByRiderResponse.matches:type_name -> proto.v1.Match
+	0,  // 8: proto.v1.ListMyMatchesResponse.matches:type_name -> proto.v1.Match
 	1,  // 9: proto.v1.MatchService.RequestToJoin:input_type -> proto.v1.RequestToJoinRequest
 	3,  // 10: proto.v1.MatchService.AcceptRequest:input_type -> proto.v1.AcceptRequestRequest
 	5,  // 11: proto.v1.MatchService.RejectRequest:input_type -> proto.v1.RejectRequestRequest
@@ -829,15 +906,17 @@ var file_proto_v1_match_proto_depIdxs = []int32{
 	9,  // 13: proto.v1.MatchService.GetMatch:input_type -> proto.v1.GetMatchRequest
 	11, // 14: proto.v1.MatchService.ListMatchesByRide:input_type -> proto.v1.ListMatchesByRideRequest
 	13, // 15: proto.v1.MatchService.ListMatchesByRider:input_type -> proto.v1.ListMatchesByRiderRequest
-	2,  // 16: proto.v1.MatchService.RequestToJoin:output_type -> proto.v1.RequestToJoinResponse
-	4,  // 17: proto.v1.MatchService.AcceptRequest:output_type -> proto.v1.AcceptRequestResponse
-	6,  // 18: proto.v1.MatchService.RejectRequest:output_type -> proto.v1.RejectRequestResponse
-	8,  // 19: proto.v1.MatchService.CompleteMatch:output_type -> proto.v1.CompleteMatchResponse
-	10, // 20: proto.v1.MatchService.GetMatch:output_type -> proto.v1.GetMatchResponse
-	12, // 21: proto.v1.MatchService.ListMatchesByRide:output_type -> proto.v1.ListMatchesByRideResponse
-	14, // 22: proto.v1.MatchService.ListMatchesByRider:output_type -> proto.v1.ListMatchesByRiderResponse
-	16, // [16:23] is the sub-list for method output_type
-	9,  // [9:16] is the sub-list for method input_type
+	15, // 16: proto.v1.MatchService.ListMyMatches:input_type -> proto.v1.ListMyMatchesRequest
+	2,  // 17: proto.v1.MatchService.RequestToJoin:output_type -> proto.v1.RequestToJoinResponse
+	4,  // 18: proto.v1.MatchService.AcceptRequest:output_type -> proto.v1.AcceptRequestResponse
+	6,  // 19: proto.v1.MatchService.RejectRequest:output_type -> proto.v1.RejectRequestResponse
+	8,  // 20: proto.v1.MatchService.CompleteMatch:output_type -> proto.v1.CompleteMatchResponse
+	10, // 21: proto.v1.MatchService.GetMatch:output_type -> proto.v1.GetMatchResponse
+	12, // 22: proto.v1.MatchService.ListMatchesByRide:output_type -> proto.v1.ListMatchesByRideResponse
+	14, // 23: proto.v1.MatchService.ListMatchesByRider:output_type -> proto.v1.ListMatchesByRiderResponse
+	16, // 24: proto.v1.MatchService.ListMyMatches:output_type -> proto.v1.ListMyMatchesResponse
+	17, // [17:25] is the sub-list for method output_type
+	9,  // [9:17] is the sub-list for method input_type
 	9,  // [9:9] is the sub-list for extension type_name
 	9,  // [9:9] is the sub-list for extension extendee
 	0,  // [0:9] is the sub-list for field type_name
@@ -854,7 +933,7 @@ func file_proto_v1_match_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_v1_match_proto_rawDesc), len(file_proto_v1_match_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

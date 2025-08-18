@@ -10,27 +10,26 @@ service LocationService {
   rpc UpsertLocation(UpsertLocationRequest) returns (UpsertLocationResponse) {}
   rpc GetLocationByUser(GetLocationByUserRequest) returns (GetLocationByUserResponse) {}
   rpc ListNearby(ListNearbyRequest) returns (ListNearbyResponse) {}
-  rpc DeleteLocation(DeleteLocationRequest) returns (DeleteLocationResponse) {}
+  rpc DeleteMyLocation(DeleteMyLocationRequest) returns (DeleteMyLocationResponse) {}
 }
-
 
 message UserLocation {
-  string user_id = 1;                              
-  double latitude = 2;                             
-  double longitude = 3;                             
-  string geohash = 4;                               
-  google.protobuf.Timestamp updated_at = 5;         // Last update time
+  string user_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+  string geohash = 4;
+  google.protobuf.Timestamp updated_at = 5;
 }
 
-//UpsertLocation
 message UpsertLocationRequest {
-  UserLocation location = 1;
+  double latitude = 1;
+  double longitude = 2;
+  string geohash = 3;
 }
 message UpsertLocationResponse {
   UserLocation location = 1;
 }
 
-//GetLocationByUser
 message GetLocationByUserRequest {
   string user_id = 1;
 }
@@ -38,19 +37,15 @@ message GetLocationByUserResponse {
   UserLocation location = 1;
 }
 
-//ListNearby
 message ListNearbyRequest {
-  string geohash_prefix = 1; 
-  int32  limit = 2;          
+  string geohash_prefix = 1;
+  int32 limit = 2;
 }
 message ListNearbyResponse {
   repeated UserLocation locations = 1;
 }
 
-//DeleteLocation
-message DeleteLocationRequest {
-  string user_id = 1;
-}
-message DeleteLocationResponse {
+message DeleteMyLocationRequest {}
+message DeleteMyLocationResponse {
   bool success = 1;
 }

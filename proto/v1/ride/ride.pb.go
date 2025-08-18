@@ -26,12 +26,12 @@ type RideOffer struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	DriverId      string                 `protobuf:"bytes,2,opt,name=driver_id,json=driverId,proto3" json:"driver_id,omitempty"`
-	FromGro       string                 `protobuf:"bytes,3,opt,name=from_gro,json=fromGro,proto3" json:"from_gro,omitempty"` //geohash
-	ToGeo         string                 `protobuf:"bytes,4,opt,name=to_geo,json=toGeo,proto3" json:"to_geo,omitempty"`       //geohash
-	Fare          string                 `protobuf:"bytes,5,opt,name=fare,proto3" json:"fare,omitempty"`
+	FromGeo       string                 `protobuf:"bytes,3,opt,name=from_geo,json=fromGeo,proto3" json:"from_geo,omitempty"`
+	ToGeo         string                 `protobuf:"bytes,4,opt,name=to_geo,json=toGeo,proto3" json:"to_geo,omitempty"`
+	Fare          float64                `protobuf:"fixed64,5,opt,name=fare,proto3" json:"fare,omitempty"`
 	Time          *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=time,proto3" json:"time,omitempty"`
 	Seats         int32                  `protobuf:"varint,7,opt,name=seats,proto3" json:"seats,omitempty"`
-	Status        string                 `protobuf:"bytes,8,opt,name=status,proto3" json:"status,omitempty"` // "active", "matched", "completed"
+	Status        string                 `protobuf:"bytes,8,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -80,9 +80,9 @@ func (x *RideOffer) GetDriverId() string {
 	return ""
 }
 
-func (x *RideOffer) GetFromGro() string {
+func (x *RideOffer) GetFromGeo() string {
 	if x != nil {
-		return x.FromGro
+		return x.FromGeo
 	}
 	return ""
 }
@@ -94,11 +94,11 @@ func (x *RideOffer) GetToGeo() string {
 	return ""
 }
 
-func (x *RideOffer) GetFare() string {
+func (x *RideOffer) GetFare() float64 {
 	if x != nil {
 		return x.Fare
 	}
-	return ""
+	return 0
 }
 
 func (x *RideOffer) GetTime() *timestamppb.Timestamp {
@@ -130,7 +130,7 @@ type RideRequest struct {
 	ToGeo         string                 `protobuf:"bytes,4,opt,name=to_geo,json=toGeo,proto3" json:"to_geo,omitempty"`
 	Time          *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=time,proto3" json:"time,omitempty"`
 	Seats         int32                  `protobuf:"varint,6,opt,name=seats,proto3" json:"seats,omitempty"`
-	Status        string                 `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"` // "active", "matched", "completed"
+	Status        string                 `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -214,11 +214,13 @@ func (x *RideRequest) GetStatus() string {
 	return ""
 }
 
-// ---------------- RideOffer RPCs ----------------
-// to create a ride offer
 type CreateOfferRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Offer         *RideOffer             `protobuf:"bytes,1,opt,name=offer,proto3" json:"offer,omitempty"`
+	FromGeo       string                 `protobuf:"bytes,1,opt,name=from_geo,json=fromGeo,proto3" json:"from_geo,omitempty"`
+	ToGeo         string                 `protobuf:"bytes,2,opt,name=to_geo,json=toGeo,proto3" json:"to_geo,omitempty"`
+	Fare          float64                `protobuf:"fixed64,3,opt,name=fare,proto3" json:"fare,omitempty"`
+	Time          *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=time,proto3" json:"time,omitempty"`
+	Seats         int32                  `protobuf:"varint,5,opt,name=seats,proto3" json:"seats,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -253,11 +255,39 @@ func (*CreateOfferRequest) Descriptor() ([]byte, []int) {
 	return file_proto_v1_ride_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CreateOfferRequest) GetOffer() *RideOffer {
+func (x *CreateOfferRequest) GetFromGeo() string {
 	if x != nil {
-		return x.Offer
+		return x.FromGeo
+	}
+	return ""
+}
+
+func (x *CreateOfferRequest) GetToGeo() string {
+	if x != nil {
+		return x.ToGeo
+	}
+	return ""
+}
+
+func (x *CreateOfferRequest) GetFare() float64 {
+	if x != nil {
+		return x.Fare
+	}
+	return 0
+}
+
+func (x *CreateOfferRequest) GetTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Time
 	}
 	return nil
+}
+
+func (x *CreateOfferRequest) GetSeats() int32 {
+	if x != nil {
+		return x.Seats
+	}
+	return 0
 }
 
 type CreateOfferResponse struct {
@@ -304,7 +334,6 @@ func (x *CreateOfferResponse) GetOffer() *RideOffer {
 	return nil
 }
 
-// to get the details of particular offer by its id
 type GetOfferRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -393,11 +422,12 @@ func (x *GetOfferResponse) GetOffer() *RideOffer {
 	return nil
 }
 
-// to update offer request
-// sending full rideoffer, serveronly update mutable fields
 type UpdateOfferRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Offer         *RideOffer             `protobuf:"bytes,1,opt,name=offer,proto3" json:"offer,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Fare          float64                `protobuf:"fixed64,2,opt,name=fare,proto3" json:"fare,omitempty"`
+	Seats         int32                  `protobuf:"varint,3,opt,name=seats,proto3" json:"seats,omitempty"`
+	Status        string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -432,16 +462,37 @@ func (*UpdateOfferRequest) Descriptor() ([]byte, []int) {
 	return file_proto_v1_ride_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *UpdateOfferRequest) GetOffer() *RideOffer {
+func (x *UpdateOfferRequest) GetId() string {
 	if x != nil {
-		return x.Offer
+		return x.Id
 	}
-	return nil
+	return ""
+}
+
+func (x *UpdateOfferRequest) GetFare() float64 {
+	if x != nil {
+		return x.Fare
+	}
+	return 0
+}
+
+func (x *UpdateOfferRequest) GetSeats() int32 {
+	if x != nil {
+		return x.Seats
+	}
+	return 0
+}
+
+func (x *UpdateOfferRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
 }
 
 type UpdateOfferResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Offer         *RideOffer             `protobuf:"bytes,1,opt,name=offer,proto3" json:"offer,omitempty"` //updated rideoffer
+	Offer         *RideOffer             `protobuf:"bytes,1,opt,name=offer,proto3" json:"offer,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -483,7 +534,6 @@ func (x *UpdateOfferResponse) GetOffer() *RideOffer {
 	return nil
 }
 
-// to delete the rideoffer by id
 type DeleteOfferRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -572,7 +622,6 @@ func (x *DeleteOfferResponse) GetSuccess() bool {
 	return false
 }
 
-// to list the neaby offer UpdateRequestStatus
 type ListNearbyOffersRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GeohashPrefix string                 `protobuf:"bytes,1,opt,name=geohash_prefix,json=geohashPrefix,proto3" json:"geohash_prefix,omitempty"`
@@ -669,18 +718,108 @@ func (x *ListNearbyOffersResponse) GetOffers() []*RideOffer {
 	return nil
 }
 
-// ---------------- RideRequest RPCs ----------------
-// to create ride request
+type ListMyOffersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMyOffersRequest) Reset() {
+	*x = ListMyOffersRequest{}
+	mi := &file_proto_v1_ride_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMyOffersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMyOffersRequest) ProtoMessage() {}
+
+func (x *ListMyOffersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_v1_ride_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMyOffersRequest.ProtoReflect.Descriptor instead.
+func (*ListMyOffersRequest) Descriptor() ([]byte, []int) {
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *ListMyOffersRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type ListMyOffersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Offers        []*RideOffer           `protobuf:"bytes,1,rep,name=offers,proto3" json:"offers,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMyOffersResponse) Reset() {
+	*x = ListMyOffersResponse{}
+	mi := &file_proto_v1_ride_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMyOffersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMyOffersResponse) ProtoMessage() {}
+
+func (x *ListMyOffersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_v1_ride_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMyOffersResponse.ProtoReflect.Descriptor instead.
+func (*ListMyOffersResponse) Descriptor() ([]byte, []int) {
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *ListMyOffersResponse) GetOffers() []*RideOffer {
+	if x != nil {
+		return x.Offers
+	}
+	return nil
+}
+
 type CreateRequestRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Request       *RideRequest           `protobuf:"bytes,1,opt,name=request,proto3" json:"request,omitempty"`
+	FromGeo       string                 `protobuf:"bytes,1,opt,name=from_geo,json=fromGeo,proto3" json:"from_geo,omitempty"`
+	ToGeo         string                 `protobuf:"bytes,2,opt,name=to_geo,json=toGeo,proto3" json:"to_geo,omitempty"`
+	Time          *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=time,proto3" json:"time,omitempty"`
+	Seats         int32                  `protobuf:"varint,4,opt,name=seats,proto3" json:"seats,omitempty"`
+	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateRequestRequest) Reset() {
 	*x = CreateRequestRequest{}
-	mi := &file_proto_v1_ride_proto_msgTypes[12]
+	mi := &file_proto_v1_ride_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -692,7 +831,7 @@ func (x *CreateRequestRequest) String() string {
 func (*CreateRequestRequest) ProtoMessage() {}
 
 func (x *CreateRequestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_ride_proto_msgTypes[12]
+	mi := &file_proto_v1_ride_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -705,14 +844,42 @@ func (x *CreateRequestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateRequestRequest.ProtoReflect.Descriptor instead.
 func (*CreateRequestRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_ride_proto_rawDescGZIP(), []int{12}
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{14}
 }
 
-func (x *CreateRequestRequest) GetRequest() *RideRequest {
+func (x *CreateRequestRequest) GetFromGeo() string {
 	if x != nil {
-		return x.Request
+		return x.FromGeo
+	}
+	return ""
+}
+
+func (x *CreateRequestRequest) GetToGeo() string {
+	if x != nil {
+		return x.ToGeo
+	}
+	return ""
+}
+
+func (x *CreateRequestRequest) GetTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Time
 	}
 	return nil
+}
+
+func (x *CreateRequestRequest) GetSeats() int32 {
+	if x != nil {
+		return x.Seats
+	}
+	return 0
+}
+
+func (x *CreateRequestRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
 }
 
 type CreateRequestResponse struct {
@@ -724,7 +891,7 @@ type CreateRequestResponse struct {
 
 func (x *CreateRequestResponse) Reset() {
 	*x = CreateRequestResponse{}
-	mi := &file_proto_v1_ride_proto_msgTypes[13]
+	mi := &file_proto_v1_ride_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -736,7 +903,7 @@ func (x *CreateRequestResponse) String() string {
 func (*CreateRequestResponse) ProtoMessage() {}
 
 func (x *CreateRequestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_ride_proto_msgTypes[13]
+	mi := &file_proto_v1_ride_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -749,7 +916,7 @@ func (x *CreateRequestResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateRequestResponse.ProtoReflect.Descriptor instead.
 func (*CreateRequestResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_ride_proto_rawDescGZIP(), []int{13}
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *CreateRequestResponse) GetRequest() *RideRequest {
@@ -759,7 +926,6 @@ func (x *CreateRequestResponse) GetRequest() *RideRequest {
 	return nil
 }
 
-// to get the particular request by its id
 type GetRequestRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -769,7 +935,7 @@ type GetRequestRequest struct {
 
 func (x *GetRequestRequest) Reset() {
 	*x = GetRequestRequest{}
-	mi := &file_proto_v1_ride_proto_msgTypes[14]
+	mi := &file_proto_v1_ride_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -781,7 +947,7 @@ func (x *GetRequestRequest) String() string {
 func (*GetRequestRequest) ProtoMessage() {}
 
 func (x *GetRequestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_ride_proto_msgTypes[14]
+	mi := &file_proto_v1_ride_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -794,7 +960,7 @@ func (x *GetRequestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRequestRequest.ProtoReflect.Descriptor instead.
 func (*GetRequestRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_ride_proto_rawDescGZIP(), []int{14}
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GetRequestRequest) GetId() string {
@@ -813,7 +979,7 @@ type GetRequestResponse struct {
 
 func (x *GetRequestResponse) Reset() {
 	*x = GetRequestResponse{}
-	mi := &file_proto_v1_ride_proto_msgTypes[15]
+	mi := &file_proto_v1_ride_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -825,7 +991,7 @@ func (x *GetRequestResponse) String() string {
 func (*GetRequestResponse) ProtoMessage() {}
 
 func (x *GetRequestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_ride_proto_msgTypes[15]
+	mi := &file_proto_v1_ride_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -838,7 +1004,7 @@ func (x *GetRequestResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRequestResponse.ProtoReflect.Descriptor instead.
 func (*GetRequestResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_ride_proto_rawDescGZIP(), []int{15}
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GetRequestResponse) GetRequest() *RideRequest {
@@ -848,7 +1014,6 @@ func (x *GetRequestResponse) GetRequest() *RideRequest {
 	return nil
 }
 
-// to update the ride request
 type UpdateRequestStatusRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -859,7 +1024,7 @@ type UpdateRequestStatusRequest struct {
 
 func (x *UpdateRequestStatusRequest) Reset() {
 	*x = UpdateRequestStatusRequest{}
-	mi := &file_proto_v1_ride_proto_msgTypes[16]
+	mi := &file_proto_v1_ride_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -871,7 +1036,7 @@ func (x *UpdateRequestStatusRequest) String() string {
 func (*UpdateRequestStatusRequest) ProtoMessage() {}
 
 func (x *UpdateRequestStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_ride_proto_msgTypes[16]
+	mi := &file_proto_v1_ride_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -884,7 +1049,7 @@ func (x *UpdateRequestStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRequestStatusRequest.ProtoReflect.Descriptor instead.
 func (*UpdateRequestStatusRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_ride_proto_rawDescGZIP(), []int{16}
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *UpdateRequestStatusRequest) GetId() string {
@@ -910,7 +1075,7 @@ type UpdateRequestStatusResponse struct {
 
 func (x *UpdateRequestStatusResponse) Reset() {
 	*x = UpdateRequestStatusResponse{}
-	mi := &file_proto_v1_ride_proto_msgTypes[17]
+	mi := &file_proto_v1_ride_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -922,7 +1087,7 @@ func (x *UpdateRequestStatusResponse) String() string {
 func (*UpdateRequestStatusResponse) ProtoMessage() {}
 
 func (x *UpdateRequestStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_ride_proto_msgTypes[17]
+	mi := &file_proto_v1_ride_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -935,7 +1100,7 @@ func (x *UpdateRequestStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateRequestStatusResponse.ProtoReflect.Descriptor instead.
 func (*UpdateRequestStatusResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_ride_proto_rawDescGZIP(), []int{17}
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *UpdateRequestStatusResponse) GetRequest() *RideRequest {
@@ -945,7 +1110,6 @@ func (x *UpdateRequestStatusResponse) GetRequest() *RideRequest {
 	return nil
 }
 
-// to delete the ride request
 type DeleteRequestRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -955,7 +1119,7 @@ type DeleteRequestRequest struct {
 
 func (x *DeleteRequestRequest) Reset() {
 	*x = DeleteRequestRequest{}
-	mi := &file_proto_v1_ride_proto_msgTypes[18]
+	mi := &file_proto_v1_ride_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -967,7 +1131,7 @@ func (x *DeleteRequestRequest) String() string {
 func (*DeleteRequestRequest) ProtoMessage() {}
 
 func (x *DeleteRequestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_ride_proto_msgTypes[18]
+	mi := &file_proto_v1_ride_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -980,7 +1144,7 @@ func (x *DeleteRequestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteRequestRequest.ProtoReflect.Descriptor instead.
 func (*DeleteRequestRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_ride_proto_rawDescGZIP(), []int{18}
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *DeleteRequestRequest) GetId() string {
@@ -999,7 +1163,7 @@ type DeleteRequestResponse struct {
 
 func (x *DeleteRequestResponse) Reset() {
 	*x = DeleteRequestResponse{}
-	mi := &file_proto_v1_ride_proto_msgTypes[19]
+	mi := &file_proto_v1_ride_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1011,7 +1175,7 @@ func (x *DeleteRequestResponse) String() string {
 func (*DeleteRequestResponse) ProtoMessage() {}
 
 func (x *DeleteRequestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_ride_proto_msgTypes[19]
+	mi := &file_proto_v1_ride_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1024,7 +1188,7 @@ func (x *DeleteRequestResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteRequestResponse.ProtoReflect.Descriptor instead.
 func (*DeleteRequestResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_ride_proto_rawDescGZIP(), []int{19}
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *DeleteRequestResponse) GetSuccess() bool {
@@ -1034,7 +1198,6 @@ func (x *DeleteRequestResponse) GetSuccess() bool {
 	return false
 }
 
-// to list all the nearby request by geohash
 type ListNearbyRequestsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GeohashPrefix string                 `protobuf:"bytes,1,opt,name=geohash_prefix,json=geohashPrefix,proto3" json:"geohash_prefix,omitempty"`
@@ -1045,7 +1208,7 @@ type ListNearbyRequestsRequest struct {
 
 func (x *ListNearbyRequestsRequest) Reset() {
 	*x = ListNearbyRequestsRequest{}
-	mi := &file_proto_v1_ride_proto_msgTypes[20]
+	mi := &file_proto_v1_ride_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1057,7 +1220,7 @@ func (x *ListNearbyRequestsRequest) String() string {
 func (*ListNearbyRequestsRequest) ProtoMessage() {}
 
 func (x *ListNearbyRequestsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_ride_proto_msgTypes[20]
+	mi := &file_proto_v1_ride_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1070,7 +1233,7 @@ func (x *ListNearbyRequestsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListNearbyRequestsRequest.ProtoReflect.Descriptor instead.
 func (*ListNearbyRequestsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_ride_proto_rawDescGZIP(), []int{20}
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *ListNearbyRequestsRequest) GetGeohashPrefix() string {
@@ -1096,7 +1259,7 @@ type ListNearbyRequestsResponse struct {
 
 func (x *ListNearbyRequestsResponse) Reset() {
 	*x = ListNearbyRequestsResponse{}
-	mi := &file_proto_v1_ride_proto_msgTypes[21]
+	mi := &file_proto_v1_ride_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1108,7 +1271,7 @@ func (x *ListNearbyRequestsResponse) String() string {
 func (*ListNearbyRequestsResponse) ProtoMessage() {}
 
 func (x *ListNearbyRequestsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_ride_proto_msgTypes[21]
+	mi := &file_proto_v1_ride_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1121,10 +1284,98 @@ func (x *ListNearbyRequestsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListNearbyRequestsResponse.ProtoReflect.Descriptor instead.
 func (*ListNearbyRequestsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_ride_proto_rawDescGZIP(), []int{21}
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *ListNearbyRequestsResponse) GetRequests() []*RideRequest {
+	if x != nil {
+		return x.Requests
+	}
+	return nil
+}
+
+type ListMyRequestsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMyRequestsRequest) Reset() {
+	*x = ListMyRequestsRequest{}
+	mi := &file_proto_v1_ride_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMyRequestsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMyRequestsRequest) ProtoMessage() {}
+
+func (x *ListMyRequestsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_v1_ride_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMyRequestsRequest.ProtoReflect.Descriptor instead.
+func (*ListMyRequestsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *ListMyRequestsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type ListMyRequestsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Requests      []*RideRequest         `protobuf:"bytes,1,rep,name=requests,proto3" json:"requests,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMyRequestsResponse) Reset() {
+	*x = ListMyRequestsResponse{}
+	mi := &file_proto_v1_ride_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMyRequestsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMyRequestsResponse) ProtoMessage() {}
+
+func (x *ListMyRequestsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_v1_ride_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMyRequestsResponse.ProtoReflect.Descriptor instead.
+func (*ListMyRequestsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_v1_ride_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *ListMyRequestsResponse) GetRequests() []*RideRequest {
 	if x != nil {
 		return x.Requests
 	}
@@ -1139,9 +1390,9 @@ const file_proto_v1_ride_proto_rawDesc = "" +
 	"\tRideOffer\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tdriver_id\x18\x02 \x01(\tR\bdriverId\x12\x19\n" +
-	"\bfrom_gro\x18\x03 \x01(\tR\afromGro\x12\x15\n" +
+	"\bfrom_geo\x18\x03 \x01(\tR\afromGeo\x12\x15\n" +
 	"\x06to_geo\x18\x04 \x01(\tR\x05toGeo\x12\x12\n" +
-	"\x04fare\x18\x05 \x01(\tR\x04fare\x12.\n" +
+	"\x04fare\x18\x05 \x01(\x01R\x04fare\x12.\n" +
 	"\x04time\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\x04time\x12\x14\n" +
 	"\x05seats\x18\a \x01(\x05R\x05seats\x12\x16\n" +
 	"\x06status\x18\b \x01(\tR\x06status\"\xc6\x01\n" +
@@ -1152,17 +1403,24 @@ const file_proto_v1_ride_proto_rawDesc = "" +
 	"\x06to_geo\x18\x04 \x01(\tR\x05toGeo\x12.\n" +
 	"\x04time\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\x04time\x12\x14\n" +
 	"\x05seats\x18\x06 \x01(\x05R\x05seats\x12\x16\n" +
-	"\x06status\x18\a \x01(\tR\x06status\"?\n" +
-	"\x12CreateOfferRequest\x12)\n" +
-	"\x05offer\x18\x01 \x01(\v2\x13.proto.v1.RideOfferR\x05offer\"@\n" +
+	"\x06status\x18\a \x01(\tR\x06status\"\xa0\x01\n" +
+	"\x12CreateOfferRequest\x12\x19\n" +
+	"\bfrom_geo\x18\x01 \x01(\tR\afromGeo\x12\x15\n" +
+	"\x06to_geo\x18\x02 \x01(\tR\x05toGeo\x12\x12\n" +
+	"\x04fare\x18\x03 \x01(\x01R\x04fare\x12.\n" +
+	"\x04time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x04time\x12\x14\n" +
+	"\x05seats\x18\x05 \x01(\x05R\x05seats\"@\n" +
 	"\x13CreateOfferResponse\x12)\n" +
 	"\x05offer\x18\x01 \x01(\v2\x13.proto.v1.RideOfferR\x05offer\"!\n" +
 	"\x0fGetOfferRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"=\n" +
 	"\x10GetOfferResponse\x12)\n" +
-	"\x05offer\x18\x01 \x01(\v2\x13.proto.v1.RideOfferR\x05offer\"?\n" +
-	"\x12UpdateOfferRequest\x12)\n" +
-	"\x05offer\x18\x01 \x01(\v2\x13.proto.v1.RideOfferR\x05offer\"@\n" +
+	"\x05offer\x18\x01 \x01(\v2\x13.proto.v1.RideOfferR\x05offer\"f\n" +
+	"\x12UpdateOfferRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04fare\x18\x02 \x01(\x01R\x04fare\x12\x14\n" +
+	"\x05seats\x18\x03 \x01(\x05R\x05seats\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\"@\n" +
 	"\x13UpdateOfferResponse\x12)\n" +
 	"\x05offer\x18\x01 \x01(\v2\x13.proto.v1.RideOfferR\x05offer\"$\n" +
 	"\x12DeleteOfferRequest\x12\x0e\n" +
@@ -1173,9 +1431,17 @@ const file_proto_v1_ride_proto_rawDesc = "" +
 	"\x0egeohash_prefix\x18\x01 \x01(\tR\rgeohashPrefix\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x05R\x05limit\"G\n" +
 	"\x18ListNearbyOffersResponse\x12+\n" +
-	"\x06offers\x18\x01 \x03(\v2\x13.proto.v1.RideOfferR\x06offers\"G\n" +
-	"\x14CreateRequestRequest\x12/\n" +
-	"\arequest\x18\x01 \x01(\v2\x15.proto.v1.RideRequestR\arequest\"H\n" +
+	"\x06offers\x18\x01 \x03(\v2\x13.proto.v1.RideOfferR\x06offers\"+\n" +
+	"\x13ListMyOffersRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x05R\x05limit\"C\n" +
+	"\x14ListMyOffersResponse\x12+\n" +
+	"\x06offers\x18\x01 \x03(\v2\x13.proto.v1.RideOfferR\x06offers\"\xa6\x01\n" +
+	"\x14CreateRequestRequest\x12\x19\n" +
+	"\bfrom_geo\x18\x01 \x01(\tR\afromGeo\x12\x15\n" +
+	"\x06to_geo\x18\x02 \x01(\tR\x05toGeo\x12.\n" +
+	"\x04time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x04time\x12\x14\n" +
+	"\x05seats\x18\x04 \x01(\x05R\x05seats\x12\x16\n" +
+	"\x06status\x18\x05 \x01(\tR\x06status\"H\n" +
 	"\x15CreateRequestResponse\x12/\n" +
 	"\arequest\x18\x01 \x01(\v2\x15.proto.v1.RideRequestR\arequest\"#\n" +
 	"\x11GetRequestRequest\x12\x0e\n" +
@@ -1195,19 +1461,25 @@ const file_proto_v1_ride_proto_rawDesc = "" +
 	"\x0egeohash_prefix\x18\x01 \x01(\tR\rgeohashPrefix\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x05R\x05limit\"O\n" +
 	"\x1aListNearbyRequestsResponse\x121\n" +
-	"\brequests\x18\x01 \x03(\v2\x15.proto.v1.RideRequestR\brequests2\xd5\x06\n" +
+	"\brequests\x18\x01 \x03(\v2\x15.proto.v1.RideRequestR\brequests\"-\n" +
+	"\x15ListMyRequestsRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x05R\x05limit\"K\n" +
+	"\x16ListMyRequestsResponse\x121\n" +
+	"\brequests\x18\x01 \x03(\v2\x15.proto.v1.RideRequestR\brequests2\xfd\a\n" +
 	"\vRideService\x12L\n" +
 	"\vCreateOffer\x12\x1c.proto.v1.CreateOfferRequest\x1a\x1d.proto.v1.CreateOfferResponse\"\x00\x12C\n" +
 	"\bGetOffer\x12\x19.proto.v1.GetOfferRequest\x1a\x1a.proto.v1.GetOfferResponse\"\x00\x12L\n" +
 	"\vUpdateOffer\x12\x1c.proto.v1.UpdateOfferRequest\x1a\x1d.proto.v1.UpdateOfferResponse\"\x00\x12L\n" +
 	"\vDeleteOffer\x12\x1c.proto.v1.DeleteOfferRequest\x1a\x1d.proto.v1.DeleteOfferResponse\"\x00\x12[\n" +
-	"\x10ListNearbyOffers\x12!.proto.v1.ListNearbyOffersRequest\x1a\".proto.v1.ListNearbyOffersResponse\"\x00\x12R\n" +
+	"\x10ListNearbyOffers\x12!.proto.v1.ListNearbyOffersRequest\x1a\".proto.v1.ListNearbyOffersResponse\"\x00\x12O\n" +
+	"\fListMyOffers\x12\x1d.proto.v1.ListMyOffersRequest\x1a\x1e.proto.v1.ListMyOffersResponse\"\x00\x12R\n" +
 	"\rCreateRequest\x12\x1e.proto.v1.CreateRequestRequest\x1a\x1f.proto.v1.CreateRequestResponse\"\x00\x12I\n" +
 	"\n" +
 	"GetRequest\x12\x1b.proto.v1.GetRequestRequest\x1a\x1c.proto.v1.GetRequestResponse\"\x00\x12d\n" +
 	"\x13UpdateRequestStatus\x12$.proto.v1.UpdateRequestStatusRequest\x1a%.proto.v1.UpdateRequestStatusResponse\"\x00\x12R\n" +
 	"\rDeleteRequest\x12\x1e.proto.v1.DeleteRequestRequest\x1a\x1f.proto.v1.DeleteRequestResponse\"\x00\x12a\n" +
-	"\x12ListNearbyRequests\x12#.proto.v1.ListNearbyRequestsRequest\x1a$.proto.v1.ListNearbyRequestsResponse\"\x00B\x11Z\x0f./proto/v1/rideb\x06proto3"
+	"\x12ListNearbyRequests\x12#.proto.v1.ListNearbyRequestsRequest\x1a$.proto.v1.ListNearbyRequestsResponse\"\x00\x12U\n" +
+	"\x0eListMyRequests\x12\x1f.proto.v1.ListMyRequestsRequest\x1a .proto.v1.ListMyRequestsResponse\"\x00B\x11Z\x0f./proto/v1/rideb\x06proto3"
 
 var (
 	file_proto_v1_ride_proto_rawDescOnce sync.Once
@@ -1221,7 +1493,7 @@ func file_proto_v1_ride_proto_rawDescGZIP() []byte {
 	return file_proto_v1_ride_proto_rawDescData
 }
 
-var file_proto_v1_ride_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_proto_v1_ride_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
 var file_proto_v1_ride_proto_goTypes = []any{
 	(*RideOffer)(nil),                   // 0: proto.v1.RideOffer
 	(*RideRequest)(nil),                 // 1: proto.v1.RideRequest
@@ -1235,57 +1507,66 @@ var file_proto_v1_ride_proto_goTypes = []any{
 	(*DeleteOfferResponse)(nil),         // 9: proto.v1.DeleteOfferResponse
 	(*ListNearbyOffersRequest)(nil),     // 10: proto.v1.ListNearbyOffersRequest
 	(*ListNearbyOffersResponse)(nil),    // 11: proto.v1.ListNearbyOffersResponse
-	(*CreateRequestRequest)(nil),        // 12: proto.v1.CreateRequestRequest
-	(*CreateRequestResponse)(nil),       // 13: proto.v1.CreateRequestResponse
-	(*GetRequestRequest)(nil),           // 14: proto.v1.GetRequestRequest
-	(*GetRequestResponse)(nil),          // 15: proto.v1.GetRequestResponse
-	(*UpdateRequestStatusRequest)(nil),  // 16: proto.v1.UpdateRequestStatusRequest
-	(*UpdateRequestStatusResponse)(nil), // 17: proto.v1.UpdateRequestStatusResponse
-	(*DeleteRequestRequest)(nil),        // 18: proto.v1.DeleteRequestRequest
-	(*DeleteRequestResponse)(nil),       // 19: proto.v1.DeleteRequestResponse
-	(*ListNearbyRequestsRequest)(nil),   // 20: proto.v1.ListNearbyRequestsRequest
-	(*ListNearbyRequestsResponse)(nil),  // 21: proto.v1.ListNearbyRequestsResponse
-	(*timestamppb.Timestamp)(nil),       // 22: google.protobuf.Timestamp
+	(*ListMyOffersRequest)(nil),         // 12: proto.v1.ListMyOffersRequest
+	(*ListMyOffersResponse)(nil),        // 13: proto.v1.ListMyOffersResponse
+	(*CreateRequestRequest)(nil),        // 14: proto.v1.CreateRequestRequest
+	(*CreateRequestResponse)(nil),       // 15: proto.v1.CreateRequestResponse
+	(*GetRequestRequest)(nil),           // 16: proto.v1.GetRequestRequest
+	(*GetRequestResponse)(nil),          // 17: proto.v1.GetRequestResponse
+	(*UpdateRequestStatusRequest)(nil),  // 18: proto.v1.UpdateRequestStatusRequest
+	(*UpdateRequestStatusResponse)(nil), // 19: proto.v1.UpdateRequestStatusResponse
+	(*DeleteRequestRequest)(nil),        // 20: proto.v1.DeleteRequestRequest
+	(*DeleteRequestResponse)(nil),       // 21: proto.v1.DeleteRequestResponse
+	(*ListNearbyRequestsRequest)(nil),   // 22: proto.v1.ListNearbyRequestsRequest
+	(*ListNearbyRequestsResponse)(nil),  // 23: proto.v1.ListNearbyRequestsResponse
+	(*ListMyRequestsRequest)(nil),       // 24: proto.v1.ListMyRequestsRequest
+	(*ListMyRequestsResponse)(nil),      // 25: proto.v1.ListMyRequestsResponse
+	(*timestamppb.Timestamp)(nil),       // 26: google.protobuf.Timestamp
 }
 var file_proto_v1_ride_proto_depIdxs = []int32{
-	22, // 0: proto.v1.RideOffer.time:type_name -> google.protobuf.Timestamp
-	22, // 1: proto.v1.RideRequest.time:type_name -> google.protobuf.Timestamp
-	0,  // 2: proto.v1.CreateOfferRequest.offer:type_name -> proto.v1.RideOffer
+	26, // 0: proto.v1.RideOffer.time:type_name -> google.protobuf.Timestamp
+	26, // 1: proto.v1.RideRequest.time:type_name -> google.protobuf.Timestamp
+	26, // 2: proto.v1.CreateOfferRequest.time:type_name -> google.protobuf.Timestamp
 	0,  // 3: proto.v1.CreateOfferResponse.offer:type_name -> proto.v1.RideOffer
 	0,  // 4: proto.v1.GetOfferResponse.offer:type_name -> proto.v1.RideOffer
-	0,  // 5: proto.v1.UpdateOfferRequest.offer:type_name -> proto.v1.RideOffer
-	0,  // 6: proto.v1.UpdateOfferResponse.offer:type_name -> proto.v1.RideOffer
-	0,  // 7: proto.v1.ListNearbyOffersResponse.offers:type_name -> proto.v1.RideOffer
-	1,  // 8: proto.v1.CreateRequestRequest.request:type_name -> proto.v1.RideRequest
+	0,  // 5: proto.v1.UpdateOfferResponse.offer:type_name -> proto.v1.RideOffer
+	0,  // 6: proto.v1.ListNearbyOffersResponse.offers:type_name -> proto.v1.RideOffer
+	0,  // 7: proto.v1.ListMyOffersResponse.offers:type_name -> proto.v1.RideOffer
+	26, // 8: proto.v1.CreateRequestRequest.time:type_name -> google.protobuf.Timestamp
 	1,  // 9: proto.v1.CreateRequestResponse.request:type_name -> proto.v1.RideRequest
 	1,  // 10: proto.v1.GetRequestResponse.request:type_name -> proto.v1.RideRequest
 	1,  // 11: proto.v1.UpdateRequestStatusResponse.request:type_name -> proto.v1.RideRequest
 	1,  // 12: proto.v1.ListNearbyRequestsResponse.requests:type_name -> proto.v1.RideRequest
-	2,  // 13: proto.v1.RideService.CreateOffer:input_type -> proto.v1.CreateOfferRequest
-	4,  // 14: proto.v1.RideService.GetOffer:input_type -> proto.v1.GetOfferRequest
-	6,  // 15: proto.v1.RideService.UpdateOffer:input_type -> proto.v1.UpdateOfferRequest
-	8,  // 16: proto.v1.RideService.DeleteOffer:input_type -> proto.v1.DeleteOfferRequest
-	10, // 17: proto.v1.RideService.ListNearbyOffers:input_type -> proto.v1.ListNearbyOffersRequest
-	12, // 18: proto.v1.RideService.CreateRequest:input_type -> proto.v1.CreateRequestRequest
-	14, // 19: proto.v1.RideService.GetRequest:input_type -> proto.v1.GetRequestRequest
-	16, // 20: proto.v1.RideService.UpdateRequestStatus:input_type -> proto.v1.UpdateRequestStatusRequest
-	18, // 21: proto.v1.RideService.DeleteRequest:input_type -> proto.v1.DeleteRequestRequest
-	20, // 22: proto.v1.RideService.ListNearbyRequests:input_type -> proto.v1.ListNearbyRequestsRequest
-	3,  // 23: proto.v1.RideService.CreateOffer:output_type -> proto.v1.CreateOfferResponse
-	5,  // 24: proto.v1.RideService.GetOffer:output_type -> proto.v1.GetOfferResponse
-	7,  // 25: proto.v1.RideService.UpdateOffer:output_type -> proto.v1.UpdateOfferResponse
-	9,  // 26: proto.v1.RideService.DeleteOffer:output_type -> proto.v1.DeleteOfferResponse
-	11, // 27: proto.v1.RideService.ListNearbyOffers:output_type -> proto.v1.ListNearbyOffersResponse
-	13, // 28: proto.v1.RideService.CreateRequest:output_type -> proto.v1.CreateRequestResponse
-	15, // 29: proto.v1.RideService.GetRequest:output_type -> proto.v1.GetRequestResponse
-	17, // 30: proto.v1.RideService.UpdateRequestStatus:output_type -> proto.v1.UpdateRequestStatusResponse
-	19, // 31: proto.v1.RideService.DeleteRequest:output_type -> proto.v1.DeleteRequestResponse
-	21, // 32: proto.v1.RideService.ListNearbyRequests:output_type -> proto.v1.ListNearbyRequestsResponse
-	23, // [23:33] is the sub-list for method output_type
-	13, // [13:23] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	1,  // 13: proto.v1.ListMyRequestsResponse.requests:type_name -> proto.v1.RideRequest
+	2,  // 14: proto.v1.RideService.CreateOffer:input_type -> proto.v1.CreateOfferRequest
+	4,  // 15: proto.v1.RideService.GetOffer:input_type -> proto.v1.GetOfferRequest
+	6,  // 16: proto.v1.RideService.UpdateOffer:input_type -> proto.v1.UpdateOfferRequest
+	8,  // 17: proto.v1.RideService.DeleteOffer:input_type -> proto.v1.DeleteOfferRequest
+	10, // 18: proto.v1.RideService.ListNearbyOffers:input_type -> proto.v1.ListNearbyOffersRequest
+	12, // 19: proto.v1.RideService.ListMyOffers:input_type -> proto.v1.ListMyOffersRequest
+	14, // 20: proto.v1.RideService.CreateRequest:input_type -> proto.v1.CreateRequestRequest
+	16, // 21: proto.v1.RideService.GetRequest:input_type -> proto.v1.GetRequestRequest
+	18, // 22: proto.v1.RideService.UpdateRequestStatus:input_type -> proto.v1.UpdateRequestStatusRequest
+	20, // 23: proto.v1.RideService.DeleteRequest:input_type -> proto.v1.DeleteRequestRequest
+	22, // 24: proto.v1.RideService.ListNearbyRequests:input_type -> proto.v1.ListNearbyRequestsRequest
+	24, // 25: proto.v1.RideService.ListMyRequests:input_type -> proto.v1.ListMyRequestsRequest
+	3,  // 26: proto.v1.RideService.CreateOffer:output_type -> proto.v1.CreateOfferResponse
+	5,  // 27: proto.v1.RideService.GetOffer:output_type -> proto.v1.GetOfferResponse
+	7,  // 28: proto.v1.RideService.UpdateOffer:output_type -> proto.v1.UpdateOfferResponse
+	9,  // 29: proto.v1.RideService.DeleteOffer:output_type -> proto.v1.DeleteOfferResponse
+	11, // 30: proto.v1.RideService.ListNearbyOffers:output_type -> proto.v1.ListNearbyOffersResponse
+	13, // 31: proto.v1.RideService.ListMyOffers:output_type -> proto.v1.ListMyOffersResponse
+	15, // 32: proto.v1.RideService.CreateRequest:output_type -> proto.v1.CreateRequestResponse
+	17, // 33: proto.v1.RideService.GetRequest:output_type -> proto.v1.GetRequestResponse
+	19, // 34: proto.v1.RideService.UpdateRequestStatus:output_type -> proto.v1.UpdateRequestStatusResponse
+	21, // 35: proto.v1.RideService.DeleteRequest:output_type -> proto.v1.DeleteRequestResponse
+	23, // 36: proto.v1.RideService.ListNearbyRequests:output_type -> proto.v1.ListNearbyRequestsResponse
+	25, // 37: proto.v1.RideService.ListMyRequests:output_type -> proto.v1.ListMyRequestsResponse
+	26, // [26:38] is the sub-list for method output_type
+	14, // [14:26] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_proto_v1_ride_proto_init() }
@@ -1299,7 +1580,7 @@ func file_proto_v1_ride_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_v1_ride_proto_rawDesc), len(file_proto_v1_ride_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   22,
+			NumMessages:   26,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

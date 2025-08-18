@@ -3,13 +3,15 @@ package db
 import "time"
 
 type Review struct {
-	ID  		string      `gorm:"primaryKey"` // unique review id
-	RideID      string                          // RideOffer.ID of the ride being reviewed
-	FromUserID  string                          // User.ID who is writing
-	ToUserID    string                          // User.ID who is being reviewed
-	Score       int                             // 1-5 based on 
-	Comment     string                          // feedback of the ride
-	CreatedAt   time.Time                       // when the review was created
+	ID         string `gorm:"primaryKey;size:191"`
+	RideID     string `gorm:"size:191;index"`
+	FromUserID string `gorm:"size:191;index"`
+	ToUserID   string `gorm:"size:191;index"`
+	Score      int
+	Comment    string    `gorm:"type:text"`
+	CreatedAt  time.Time `gorm:"index"`
+
+	Ride     *RideOffer `gorm:"foreignKey:RideID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	FromUser *User      `gorm:"foreignKey:FromUserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+	ToUser   *User      `gorm:"foreignKey:ToUserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
-
-

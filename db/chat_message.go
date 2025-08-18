@@ -2,11 +2,13 @@ package db
 
 import "time"
 
-// chatmessage is a message/chat between rider and driver after matching
 type ChatMessage struct {
-	ID 			string     `gorm:"primaryKey"`   // evey message has unique messageID
-	RideID 		string      // RideOffer.ID - which ride this message is about
-	SenderID 	string      // who sent the message,User.ID -  who sent the message
-	Content 	string      //content of the chat
-	Timestamp 	time.Time   //when the mesage was sennt
+	ID        string    `gorm:"primaryKey;size:191"`
+	RideID    string    `gorm:"size:191"`
+	SenderID  string    `gorm:"size:191"`
+	Content   string    `gorm:"type:text"`
+	Timestamp time.Time `gorm:"index"`
+
+	Ride   *RideOffer `gorm:"foreignKey:RideID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Sender *User      `gorm:"foreignKey:SenderID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
 }

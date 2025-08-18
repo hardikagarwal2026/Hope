@@ -28,12 +28,7 @@ const (
 // UserServiceClient is the client API for UserService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// UserService is for read or update operations for user profiles
-// defines gRPC service, like an interface
-// {} can contain options, but now it is empty
 type UserServiceClient interface {
-	// each rpc ek remote method hai
 	GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
 	UpdateMe(ctx context.Context, in *UpdateMeRequest, opts ...grpc.CallOption) (*UpdateMeResponse, error)
@@ -91,12 +86,7 @@ func (c *userServiceClient) ListUsers(ctx context.Context, in *ListUsersRequest,
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
-//
-// UserService is for read or update operations for user profiles
-// defines gRPC service, like an interface
-// {} can contain options, but now it is empty
 type UserServiceServer interface {
-	// each rpc ek remote method hai
 	GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
 	UpdateMe(context.Context, *UpdateMeRequest) (*UpdateMeResponse, error)

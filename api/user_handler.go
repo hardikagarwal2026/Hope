@@ -20,24 +20,22 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 	return &UserHandler{userService: userService}
 }
 
-
-func toUserPB(u *db.User) *pb.User{
-	if u== nil {
+func toUserPB(u *db.User) *pb.User {
+	if u == nil {
 		return nil
 	}
 
 	return &pb.User{
-		Id: u.ID,
-		Name: u.Name,
-		Email: u.Email,
+		Id:       u.ID,
+		Name:     u.Name,
+		Email:    u.Email,
 		PhotoUrl: u.PhotoURL,
-		Geohash: u.Geohash,
+		Geohash:  u.Geohash,
 		LastSeen: u.LastSeen.Unix(),
 	}
 }
 
-
-func(h *UserHandler)GetMe(ctx context.Context, _ *pb.GetMeRequest)(*pb.GetMeResponse, error){
+func (h *UserHandler) GetMe(ctx context.Context, _ *pb.GetMeRequest) (*pb.GetMeResponse, error) {
 	userID, ok := middleware.UserIDFromContext(ctx)
 	if !ok || userID == "" {
 		return nil, status.Error(codes.Unauthenticated, "missing auth")
@@ -53,46 +51,42 @@ func(h *UserHandler)GetMe(ctx context.Context, _ *pb.GetMeRequest)(*pb.GetMeResp
 	}, nil
 }
 
-
-func(h *UserHandler)GetUser(ctx context.Context, req *pb.GetUserRequest)(*pb.GetUserResponse, error){
+func (h *UserHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
 	if req == nil || req.GetUserId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "user id is required")
 	}
 
 	u, err := h.userService.GetUserByID(ctx, req.GetUserId())
-	if err != nil || u == nil ||u.ID == "" {
+	if err != nil || u == nil || u.ID == "" {
 		return nil, status.Error(codes.NotFound, "user not found")
 	}
 
 	return &pb.GetUserResponse{User: toUserPB(u)}, nil
 }
 
-
-func(h *UserHandler)UpdateMe(ctx context.Context, req *pb.UpdateMeRequest)(*pb.UpdateMeResponse, error){
+func (h *UserHandler) UpdateMe(ctx context.Context, req *pb.UpdateMeRequest) (*pb.UpdateMeResponse, error) {
 	userID, ok := middleware.UserIDFromContext(ctx)
 	if !ok || userID == "" {
 		return nil, status.Error(codes.Unauthenticated, "missing auth")
 	}
-	if req == nil || req.GetUser() == nil || req.GetFieldMask() == nil {
-		return nil, status.Error(codes.InvalidArgument, "user and field maask required")
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "request required")
 	}
 
-	//loading the current user
 	curr, err := h.userService.GetUserByID(ctx, userID)
 	if err != nil || curr == nil || curr.ID == "" {
 		return nil, status.Error(codes.NotFound, "user not found")
 	}
 
-	for _, path := range req.FieldMask.Paths {
-		switch path {
-		case "name":
-			curr.Name = req.User.GetName()
-		case "photo_url":
-			curr.PhotoURL = req.User.GetPhotoUrl()
-		case "geohash":
-			curr.Geohash = req.User.GetGeohash()
-		default:
-		}
+	
+	if v := req.GetName(); v != "" {
+		curr.Name = v
+	}
+	if v := req.GetPhotoUrl(); v != "" {
+		curr.PhotoURL = v
+	}
+	if v := req.GetGeohash(); v != "" {
+		curr.Geohash = v
 	}
 
 	if err := h.userService.UpdateUser(ctx, curr); err != nil {
@@ -102,15 +96,14 @@ func(h *UserHandler)UpdateMe(ctx context.Context, req *pb.UpdateMeRequest)(*pb.U
 	return &pb.UpdateMeResponse{User: toUserPB(curr)}, nil
 }
 
-
-func(h *UserHandler)ListUsers(ctx context.Context, req *pb.ListUsersRequest)(*pb.ListUsersResponse, error){
+func (h *UserHandler) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
 	if req == nil || len(req.GetUserIds()) == 0 {
 		return &pb.ListUsersResponse{Users: nil}, nil
 	}
 
-	out := make([]*pb.User,0, len(req.UserIds))
+	out := make([]*pb.User, 0, len(req.UserIds))
 	for _, id := range req.UserIds {
-		if id == ""{
+		if id == "" {
 			continue
 		}
 		u, err := h.userService.GetUserByID(ctx, id)

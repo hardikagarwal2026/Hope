@@ -22,7 +22,7 @@ const (
 	LocationService_UpsertLocation_FullMethodName    = "/proto.v1.LocationService/UpsertLocation"
 	LocationService_GetLocationByUser_FullMethodName = "/proto.v1.LocationService/GetLocationByUser"
 	LocationService_ListNearby_FullMethodName        = "/proto.v1.LocationService/ListNearby"
-	LocationService_DeleteLocation_FullMethodName    = "/proto.v1.LocationService/DeleteLocation"
+	LocationService_DeleteMyLocation_FullMethodName  = "/proto.v1.LocationService/DeleteMyLocation"
 )
 
 // LocationServiceClient is the client API for LocationService service.
@@ -32,7 +32,7 @@ type LocationServiceClient interface {
 	UpsertLocation(ctx context.Context, in *UpsertLocationRequest, opts ...grpc.CallOption) (*UpsertLocationResponse, error)
 	GetLocationByUser(ctx context.Context, in *GetLocationByUserRequest, opts ...grpc.CallOption) (*GetLocationByUserResponse, error)
 	ListNearby(ctx context.Context, in *ListNearbyRequest, opts ...grpc.CallOption) (*ListNearbyResponse, error)
-	DeleteLocation(ctx context.Context, in *DeleteLocationRequest, opts ...grpc.CallOption) (*DeleteLocationResponse, error)
+	DeleteMyLocation(ctx context.Context, in *DeleteMyLocationRequest, opts ...grpc.CallOption) (*DeleteMyLocationResponse, error)
 }
 
 type locationServiceClient struct {
@@ -73,10 +73,10 @@ func (c *locationServiceClient) ListNearby(ctx context.Context, in *ListNearbyRe
 	return out, nil
 }
 
-func (c *locationServiceClient) DeleteLocation(ctx context.Context, in *DeleteLocationRequest, opts ...grpc.CallOption) (*DeleteLocationResponse, error) {
+func (c *locationServiceClient) DeleteMyLocation(ctx context.Context, in *DeleteMyLocationRequest, opts ...grpc.CallOption) (*DeleteMyLocationResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteLocationResponse)
-	err := c.cc.Invoke(ctx, LocationService_DeleteLocation_FullMethodName, in, out, cOpts...)
+	out := new(DeleteMyLocationResponse)
+	err := c.cc.Invoke(ctx, LocationService_DeleteMyLocation_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ type LocationServiceServer interface {
 	UpsertLocation(context.Context, *UpsertLocationRequest) (*UpsertLocationResponse, error)
 	GetLocationByUser(context.Context, *GetLocationByUserRequest) (*GetLocationByUserResponse, error)
 	ListNearby(context.Context, *ListNearbyRequest) (*ListNearbyResponse, error)
-	DeleteLocation(context.Context, *DeleteLocationRequest) (*DeleteLocationResponse, error)
+	DeleteMyLocation(context.Context, *DeleteMyLocationRequest) (*DeleteMyLocationResponse, error)
 	mustEmbedUnimplementedLocationServiceServer()
 }
 
@@ -110,8 +110,8 @@ func (UnimplementedLocationServiceServer) GetLocationByUser(context.Context, *Ge
 func (UnimplementedLocationServiceServer) ListNearby(context.Context, *ListNearbyRequest) (*ListNearbyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListNearby not implemented")
 }
-func (UnimplementedLocationServiceServer) DeleteLocation(context.Context, *DeleteLocationRequest) (*DeleteLocationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteLocation not implemented")
+func (UnimplementedLocationServiceServer) DeleteMyLocation(context.Context, *DeleteMyLocationRequest) (*DeleteMyLocationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteMyLocation not implemented")
 }
 func (UnimplementedLocationServiceServer) mustEmbedUnimplementedLocationServiceServer() {}
 func (UnimplementedLocationServiceServer) testEmbeddedByValue()                         {}
@@ -188,20 +188,20 @@ func _LocationService_ListNearby_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LocationService_DeleteLocation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteLocationRequest)
+func _LocationService_DeleteMyLocation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteMyLocationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LocationServiceServer).DeleteLocation(ctx, in)
+		return srv.(LocationServiceServer).DeleteMyLocation(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LocationService_DeleteLocation_FullMethodName,
+		FullMethod: LocationService_DeleteMyLocation_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LocationServiceServer).DeleteLocation(ctx, req.(*DeleteLocationRequest))
+		return srv.(LocationServiceServer).DeleteMyLocation(ctx, req.(*DeleteMyLocationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -226,8 +226,8 @@ var LocationService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LocationService_ListNearby_Handler,
 		},
 		{
-			MethodName: "DeleteLocation",
-			Handler:    _LocationService_DeleteLocation_Handler,
+			MethodName: "DeleteMyLocation",
+			Handler:    _LocationService_DeleteMyLocation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

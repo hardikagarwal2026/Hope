@@ -4,35 +4,26 @@ package proto.v1;
 
 option go_package = "./proto/v1/user";
 
-//for allowing partial updates
-import "google/protobuf/field_mask.proto";
-
-//UserService is for read or update operations for user profiles
-//defines gRPC service, like an interface
-// {} can contain options, but now it is empty
 service UserService {
-    //each rpc ek remote method hai
-    rpc GetMe(GetMeRequest) returns (GetMeResponse) {}               //for getting authenticated user profile
-    rpc GetUser(GetUserRequest) returns (GetUserResponse) {}         // returns a user profile by ID
-    rpc UpdateMe(UpdateMeRequest) returns (UpdateMeResponse) {}      // Partially updates the authenticated user's profile using FieldMask, Example: field_mask.paths: ["name", "photo_url"]
-    rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {}   // // Lists user profiles by IDs or simple pagination.
+  rpc GetMe(GetMeRequest) returns (GetMeResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc UpdateMe(UpdateMeRequest) returns (UpdateMeResponse);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
 }
 
-// same as db model
 message User {
-  string id        = 1;
-  string name      = 2;
-  string email     = 3;
+  string id = 1;
+  string name = 2;
+  string email = 3;
   string photo_url = 4;
-  string geohash   = 5;
-  int64  last_seen = 6;
+  string geohash = 5;
+  int64 last_seen = 6;
 }
 
 message GetMeRequest {}
-message GetMeResponse{
-    User user = 1;             //field of type User
+message GetMeResponse {
+  User user = 1;
 }
-
 
 message GetUserRequest {
   string user_id = 1;
@@ -42,25 +33,18 @@ message GetUserResponse {
 }
 
 
-message UpdateMeRequest{
-    User user = 1;                                          //populate only intended fields, 
-    google.protobuf.FieldMask field_mask = 2;               //"field_mask": {"paths": ["name", "photo_url"]}, jo bhi field_mask mae paths chahiye , vo hi uopdate honge
+message UpdateMeRequest {
+  string name = 1;
+  string photo_url = 2;
+  string geohash = 3;
 }
 message UpdateMeResponse {
-  User user = 1;                                            // Updated profile
+  User user = 1;
 }
 
-
-// ListUsers using their ID's
 message ListUsersRequest {
-  repeated string user_ids = 1;         //{ "user_ids": [ "1","2"]}
+  repeated string user_ids = 1;
 }
 message ListUsersResponse {
-  repeated User users = 1;              // { "users": ["user1details", "user2details"]}
+  repeated User users = 1;
 }
-
-
-//field mask basically,
-// jo fiels update karni hai , bas vo field path mae daaldo, aur sirf vohi update ke liye bhejo
-
-

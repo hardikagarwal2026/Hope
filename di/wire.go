@@ -1,13 +1,14 @@
 //go:build wireinject
 // +build wireinject
+
 package di
 
 import (
+	"github.com/google/wire"
 	"hope/api"
 	"hope/config"
 	"hope/repository"
 	"hope/service"
-	"github.com/google/wire"
 )
 
 type Handlers struct {
@@ -20,7 +21,7 @@ type Handlers struct {
 	UserHandler     *api.UserHandler
 }
 
-// Provider Set
+
 var ProviderSetService = wire.NewSet(
 	config.GetAllowedDomains,
 	config.InitDatabase,
@@ -56,6 +57,6 @@ var ProviderSetService = wire.NewSet(
 )
 
 func InitApp() (*Handlers, error) {
-    wire.Build(ProviderSetService)
-    return nil, nil
+	wire.Build(ProviderSetService)
+	return nil, nil
 }

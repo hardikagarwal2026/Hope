@@ -28,7 +28,7 @@ type UserLocation struct {
 	Latitude      float64                `protobuf:"fixed64,2,opt,name=latitude,proto3" json:"latitude,omitempty"`
 	Longitude     float64                `protobuf:"fixed64,3,opt,name=longitude,proto3" json:"longitude,omitempty"`
 	Geohash       string                 `protobuf:"bytes,4,opt,name=geohash,proto3" json:"geohash,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"` // Last update time
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -98,10 +98,11 @@ func (x *UserLocation) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-// UpsertLocation
 type UpsertLocationRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Location      *UserLocation          `protobuf:"bytes,1,opt,name=location,proto3" json:"location,omitempty"`
+	Latitude      float64                `protobuf:"fixed64,1,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude     float64                `protobuf:"fixed64,2,opt,name=longitude,proto3" json:"longitude,omitempty"`
+	Geohash       string                 `protobuf:"bytes,3,opt,name=geohash,proto3" json:"geohash,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,11 +137,25 @@ func (*UpsertLocationRequest) Descriptor() ([]byte, []int) {
 	return file_proto_v1_location_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *UpsertLocationRequest) GetLocation() *UserLocation {
+func (x *UpsertLocationRequest) GetLatitude() float64 {
 	if x != nil {
-		return x.Location
+		return x.Latitude
 	}
-	return nil
+	return 0
+}
+
+func (x *UpsertLocationRequest) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
+func (x *UpsertLocationRequest) GetGeohash() string {
+	if x != nil {
+		return x.Geohash
+	}
+	return ""
 }
 
 type UpsertLocationResponse struct {
@@ -187,7 +202,6 @@ func (x *UpsertLocationResponse) GetLocation() *UserLocation {
 	return nil
 }
 
-// GetLocationByUser
 type GetLocationByUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -276,7 +290,6 @@ func (x *GetLocationByUserResponse) GetLocation() *UserLocation {
 	return nil
 }
 
-// ListNearby
 type ListNearbyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GeohashPrefix string                 `protobuf:"bytes,1,opt,name=geohash_prefix,json=geohashPrefix,proto3" json:"geohash_prefix,omitempty"`
@@ -373,28 +386,26 @@ func (x *ListNearbyResponse) GetLocations() []*UserLocation {
 	return nil
 }
 
-// DeleteLocation
-type DeleteLocationRequest struct {
+type DeleteMyLocationRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteLocationRequest) Reset() {
-	*x = DeleteLocationRequest{}
+func (x *DeleteMyLocationRequest) Reset() {
+	*x = DeleteMyLocationRequest{}
 	mi := &file_proto_v1_location_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteLocationRequest) String() string {
+func (x *DeleteMyLocationRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteLocationRequest) ProtoMessage() {}
+func (*DeleteMyLocationRequest) ProtoMessage() {}
 
-func (x *DeleteLocationRequest) ProtoReflect() protoreflect.Message {
+func (x *DeleteMyLocationRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_v1_location_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -406,39 +417,32 @@ func (x *DeleteLocationRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteLocationRequest.ProtoReflect.Descriptor instead.
-func (*DeleteLocationRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteMyLocationRequest.ProtoReflect.Descriptor instead.
+func (*DeleteMyLocationRequest) Descriptor() ([]byte, []int) {
 	return file_proto_v1_location_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *DeleteLocationRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-type DeleteLocationResponse struct {
+type DeleteMyLocationResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteLocationResponse) Reset() {
-	*x = DeleteLocationResponse{}
+func (x *DeleteMyLocationResponse) Reset() {
+	*x = DeleteMyLocationResponse{}
 	mi := &file_proto_v1_location_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteLocationResponse) String() string {
+func (x *DeleteMyLocationResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteLocationResponse) ProtoMessage() {}
+func (*DeleteMyLocationResponse) ProtoMessage() {}
 
-func (x *DeleteLocationResponse) ProtoReflect() protoreflect.Message {
+func (x *DeleteMyLocationResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_v1_location_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -450,12 +454,12 @@ func (x *DeleteLocationResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteLocationResponse.ProtoReflect.Descriptor instead.
-func (*DeleteLocationResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteMyLocationResponse.ProtoReflect.Descriptor instead.
+func (*DeleteMyLocationResponse) Descriptor() ([]byte, []int) {
 	return file_proto_v1_location_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *DeleteLocationResponse) GetSuccess() bool {
+func (x *DeleteMyLocationResponse) GetSuccess() bool {
 	if x != nil {
 		return x.Success
 	}
@@ -473,9 +477,11 @@ const file_proto_v1_location_proto_rawDesc = "" +
 	"\tlongitude\x18\x03 \x01(\x01R\tlongitude\x12\x18\n" +
 	"\ageohash\x18\x04 \x01(\tR\ageohash\x129\n" +
 	"\n" +
-	"updated_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"K\n" +
-	"\x15UpsertLocationRequest\x122\n" +
-	"\blocation\x18\x01 \x01(\v2\x16.proto.v1.UserLocationR\blocation\"L\n" +
+	"updated_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"k\n" +
+	"\x15UpsertLocationRequest\x12\x1a\n" +
+	"\blatitude\x18\x01 \x01(\x01R\blatitude\x12\x1c\n" +
+	"\tlongitude\x18\x02 \x01(\x01R\tlongitude\x12\x18\n" +
+	"\ageohash\x18\x03 \x01(\tR\ageohash\"L\n" +
 	"\x16UpsertLocationResponse\x122\n" +
 	"\blocation\x18\x01 \x01(\v2\x16.proto.v1.UserLocationR\blocation\"3\n" +
 	"\x18GetLocationByUserRequest\x12\x17\n" +
@@ -486,17 +492,16 @@ const file_proto_v1_location_proto_rawDesc = "" +
 	"\x0egeohash_prefix\x18\x01 \x01(\tR\rgeohashPrefix\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x05R\x05limit\"J\n" +
 	"\x12ListNearbyResponse\x124\n" +
-	"\tlocations\x18\x01 \x03(\v2\x16.proto.v1.UserLocationR\tlocations\"0\n" +
-	"\x15DeleteLocationRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\"2\n" +
-	"\x16DeleteLocationResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\xea\x02\n" +
+	"\tlocations\x18\x01 \x03(\v2\x16.proto.v1.UserLocationR\tlocations\"\x19\n" +
+	"\x17DeleteMyLocationRequest\"4\n" +
+	"\x18DeleteMyLocationResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\xf0\x02\n" +
 	"\x0fLocationService\x12U\n" +
 	"\x0eUpsertLocation\x12\x1f.proto.v1.UpsertLocationRequest\x1a .proto.v1.UpsertLocationResponse\"\x00\x12^\n" +
 	"\x11GetLocationByUser\x12\".proto.v1.GetLocationByUserRequest\x1a#.proto.v1.GetLocationByUserResponse\"\x00\x12I\n" +
 	"\n" +
-	"ListNearby\x12\x1b.proto.v1.ListNearbyRequest\x1a\x1c.proto.v1.ListNearbyResponse\"\x00\x12U\n" +
-	"\x0eDeleteLocation\x12\x1f.proto.v1.DeleteLocationRequest\x1a .proto.v1.DeleteLocationResponse\"\x00B\x15Z\x13./proto/v1/locationb\x06proto3"
+	"ListNearby\x12\x1b.proto.v1.ListNearbyRequest\x1a\x1c.proto.v1.ListNearbyResponse\"\x00\x12[\n" +
+	"\x10DeleteMyLocation\x12!.proto.v1.DeleteMyLocationRequest\x1a\".proto.v1.DeleteMyLocationResponse\"\x00B\x15Z\x13./proto/v1/locationb\x06proto3"
 
 var (
 	file_proto_v1_location_proto_rawDescOnce sync.Once
@@ -519,29 +524,28 @@ var file_proto_v1_location_proto_goTypes = []any{
 	(*GetLocationByUserResponse)(nil), // 4: proto.v1.GetLocationByUserResponse
 	(*ListNearbyRequest)(nil),         // 5: proto.v1.ListNearbyRequest
 	(*ListNearbyResponse)(nil),        // 6: proto.v1.ListNearbyResponse
-	(*DeleteLocationRequest)(nil),     // 7: proto.v1.DeleteLocationRequest
-	(*DeleteLocationResponse)(nil),    // 8: proto.v1.DeleteLocationResponse
+	(*DeleteMyLocationRequest)(nil),   // 7: proto.v1.DeleteMyLocationRequest
+	(*DeleteMyLocationResponse)(nil),  // 8: proto.v1.DeleteMyLocationResponse
 	(*timestamppb.Timestamp)(nil),     // 9: google.protobuf.Timestamp
 }
 var file_proto_v1_location_proto_depIdxs = []int32{
 	9, // 0: proto.v1.UserLocation.updated_at:type_name -> google.protobuf.Timestamp
-	0, // 1: proto.v1.UpsertLocationRequest.location:type_name -> proto.v1.UserLocation
-	0, // 2: proto.v1.UpsertLocationResponse.location:type_name -> proto.v1.UserLocation
-	0, // 3: proto.v1.GetLocationByUserResponse.location:type_name -> proto.v1.UserLocation
-	0, // 4: proto.v1.ListNearbyResponse.locations:type_name -> proto.v1.UserLocation
-	1, // 5: proto.v1.LocationService.UpsertLocation:input_type -> proto.v1.UpsertLocationRequest
-	3, // 6: proto.v1.LocationService.GetLocationByUser:input_type -> proto.v1.GetLocationByUserRequest
-	5, // 7: proto.v1.LocationService.ListNearby:input_type -> proto.v1.ListNearbyRequest
-	7, // 8: proto.v1.LocationService.DeleteLocation:input_type -> proto.v1.DeleteLocationRequest
-	2, // 9: proto.v1.LocationService.UpsertLocation:output_type -> proto.v1.UpsertLocationResponse
-	4, // 10: proto.v1.LocationService.GetLocationByUser:output_type -> proto.v1.GetLocationByUserResponse
-	6, // 11: proto.v1.LocationService.ListNearby:output_type -> proto.v1.ListNearbyResponse
-	8, // 12: proto.v1.LocationService.DeleteLocation:output_type -> proto.v1.DeleteLocationResponse
-	9, // [9:13] is the sub-list for method output_type
-	5, // [5:9] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	0, // 1: proto.v1.UpsertLocationResponse.location:type_name -> proto.v1.UserLocation
+	0, // 2: proto.v1.GetLocationByUserResponse.location:type_name -> proto.v1.UserLocation
+	0, // 3: proto.v1.ListNearbyResponse.locations:type_name -> proto.v1.UserLocation
+	1, // 4: proto.v1.LocationService.UpsertLocation:input_type -> proto.v1.UpsertLocationRequest
+	3, // 5: proto.v1.LocationService.GetLocationByUser:input_type -> proto.v1.GetLocationByUserRequest
+	5, // 6: proto.v1.LocationService.ListNearby:input_type -> proto.v1.ListNearbyRequest
+	7, // 7: proto.v1.LocationService.DeleteMyLocation:input_type -> proto.v1.DeleteMyLocationRequest
+	2, // 8: proto.v1.LocationService.UpsertLocation:output_type -> proto.v1.UpsertLocationResponse
+	4, // 9: proto.v1.LocationService.GetLocationByUser:output_type -> proto.v1.GetLocationByUserResponse
+	6, // 10: proto.v1.LocationService.ListNearby:output_type -> proto.v1.ListNearbyResponse
+	8, // 11: proto.v1.LocationService.DeleteMyLocation:output_type -> proto.v1.DeleteMyLocationResponse
+	8, // [8:12] is the sub-list for method output_type
+	4, // [4:8] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_v1_location_proto_init() }

@@ -9,7 +9,6 @@ package user
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -22,7 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// same as db model
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -145,7 +143,7 @@ func (*GetMeRequest) Descriptor() ([]byte, []int) {
 
 type GetMeResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"` //field of type User
+	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -277,8 +275,9 @@ func (x *GetUserResponse) GetUser() *User {
 
 type UpdateMeRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`                            //populate only intended fields,
-	FieldMask     *fieldmaskpb.FieldMask `protobuf:"bytes,2,opt,name=field_mask,json=fieldMask,proto3" json:"field_mask,omitempty"` //"field_mask": {"paths": ["name", "photo_url"]}, jo bhi field_mask mae paths chahiye , vo hi uopdate honge
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	PhotoUrl      string                 `protobuf:"bytes,2,opt,name=photo_url,json=photoUrl,proto3" json:"photo_url,omitempty"`
+	Geohash       string                 `protobuf:"bytes,3,opt,name=geohash,proto3" json:"geohash,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -313,23 +312,30 @@ func (*UpdateMeRequest) Descriptor() ([]byte, []int) {
 	return file_proto_v1_user_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *UpdateMeRequest) GetUser() *User {
+func (x *UpdateMeRequest) GetName() string {
 	if x != nil {
-		return x.User
+		return x.Name
 	}
-	return nil
+	return ""
 }
 
-func (x *UpdateMeRequest) GetFieldMask() *fieldmaskpb.FieldMask {
+func (x *UpdateMeRequest) GetPhotoUrl() string {
 	if x != nil {
-		return x.FieldMask
+		return x.PhotoUrl
 	}
-	return nil
+	return ""
+}
+
+func (x *UpdateMeRequest) GetGeohash() string {
+	if x != nil {
+		return x.Geohash
+	}
+	return ""
 }
 
 type UpdateMeResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"` // Updated profile
+	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -371,10 +377,9 @@ func (x *UpdateMeResponse) GetUser() *User {
 	return nil
 }
 
-// ListUsers using their ID's
 type ListUsersRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserIds       []string               `protobuf:"bytes,1,rep,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"` //{ "user_ids": [ "1","2"]}
+	UserIds       []string               `protobuf:"bytes,1,rep,name=user_ids,json=userIds,proto3" json:"user_ids,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -418,7 +423,7 @@ func (x *ListUsersRequest) GetUserIds() []string {
 
 type ListUsersResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Users         []*User                `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"` // { "users": ["user1details", "user2details"]}
+	Users         []*User                `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -464,7 +469,7 @@ var File_proto_v1_user_proto protoreflect.FileDescriptor
 
 const file_proto_v1_user_proto_rawDesc = "" +
 	"\n" +
-	"\x13proto/v1/user.proto\x12\bproto.v1\x1a google/protobuf/field_mask.proto\"\x94\x01\n" +
+	"\x13proto/v1/user.proto\x12\bproto.v1\"\x94\x01\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
@@ -478,22 +483,22 @@ const file_proto_v1_user_proto_rawDesc = "" +
 	"\x0eGetUserRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"5\n" +
 	"\x0fGetUserResponse\x12\"\n" +
-	"\x04user\x18\x01 \x01(\v2\x0e.proto.v1.UserR\x04user\"p\n" +
-	"\x0fUpdateMeRequest\x12\"\n" +
-	"\x04user\x18\x01 \x01(\v2\x0e.proto.v1.UserR\x04user\x129\n" +
-	"\n" +
-	"field_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskR\tfieldMask\"6\n" +
+	"\x04user\x18\x01 \x01(\v2\x0e.proto.v1.UserR\x04user\"\\\n" +
+	"\x0fUpdateMeRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
+	"\tphoto_url\x18\x02 \x01(\tR\bphotoUrl\x12\x18\n" +
+	"\ageohash\x18\x03 \x01(\tR\ageohash\"6\n" +
 	"\x10UpdateMeResponse\x12\"\n" +
 	"\x04user\x18\x01 \x01(\v2\x0e.proto.v1.UserR\x04user\"-\n" +
 	"\x10ListUsersRequest\x12\x19\n" +
 	"\buser_ids\x18\x01 \x03(\tR\auserIds\"9\n" +
 	"\x11ListUsersResponse\x12$\n" +
-	"\x05users\x18\x01 \x03(\v2\x0e.proto.v1.UserR\x05users2\x98\x02\n" +
-	"\vUserService\x12:\n" +
-	"\x05GetMe\x12\x16.proto.v1.GetMeRequest\x1a\x17.proto.v1.GetMeResponse\"\x00\x12@\n" +
-	"\aGetUser\x12\x18.proto.v1.GetUserRequest\x1a\x19.proto.v1.GetUserResponse\"\x00\x12C\n" +
-	"\bUpdateMe\x12\x19.proto.v1.UpdateMeRequest\x1a\x1a.proto.v1.UpdateMeResponse\"\x00\x12F\n" +
-	"\tListUsers\x12\x1a.proto.v1.ListUsersRequest\x1a\x1b.proto.v1.ListUsersResponse\"\x00B\x11Z\x0f./proto/v1/userb\x06proto3"
+	"\x05users\x18\x01 \x03(\v2\x0e.proto.v1.UserR\x05users2\x90\x02\n" +
+	"\vUserService\x128\n" +
+	"\x05GetMe\x12\x16.proto.v1.GetMeRequest\x1a\x17.proto.v1.GetMeResponse\x12>\n" +
+	"\aGetUser\x12\x18.proto.v1.GetUserRequest\x1a\x19.proto.v1.GetUserResponse\x12A\n" +
+	"\bUpdateMe\x12\x19.proto.v1.UpdateMeRequest\x1a\x1a.proto.v1.UpdateMeResponse\x12D\n" +
+	"\tListUsers\x12\x1a.proto.v1.ListUsersRequest\x1a\x1b.proto.v1.ListUsersResponseB\x11Z\x0f./proto/v1/userb\x06proto3"
 
 var (
 	file_proto_v1_user_proto_rawDescOnce sync.Once
@@ -509,37 +514,34 @@ func file_proto_v1_user_proto_rawDescGZIP() []byte {
 
 var file_proto_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_proto_v1_user_proto_goTypes = []any{
-	(*User)(nil),                  // 0: proto.v1.User
-	(*GetMeRequest)(nil),          // 1: proto.v1.GetMeRequest
-	(*GetMeResponse)(nil),         // 2: proto.v1.GetMeResponse
-	(*GetUserRequest)(nil),        // 3: proto.v1.GetUserRequest
-	(*GetUserResponse)(nil),       // 4: proto.v1.GetUserResponse
-	(*UpdateMeRequest)(nil),       // 5: proto.v1.UpdateMeRequest
-	(*UpdateMeResponse)(nil),      // 6: proto.v1.UpdateMeResponse
-	(*ListUsersRequest)(nil),      // 7: proto.v1.ListUsersRequest
-	(*ListUsersResponse)(nil),     // 8: proto.v1.ListUsersResponse
-	(*fieldmaskpb.FieldMask)(nil), // 9: google.protobuf.FieldMask
+	(*User)(nil),              // 0: proto.v1.User
+	(*GetMeRequest)(nil),      // 1: proto.v1.GetMeRequest
+	(*GetMeResponse)(nil),     // 2: proto.v1.GetMeResponse
+	(*GetUserRequest)(nil),    // 3: proto.v1.GetUserRequest
+	(*GetUserResponse)(nil),   // 4: proto.v1.GetUserResponse
+	(*UpdateMeRequest)(nil),   // 5: proto.v1.UpdateMeRequest
+	(*UpdateMeResponse)(nil),  // 6: proto.v1.UpdateMeResponse
+	(*ListUsersRequest)(nil),  // 7: proto.v1.ListUsersRequest
+	(*ListUsersResponse)(nil), // 8: proto.v1.ListUsersResponse
 }
 var file_proto_v1_user_proto_depIdxs = []int32{
-	0,  // 0: proto.v1.GetMeResponse.user:type_name -> proto.v1.User
-	0,  // 1: proto.v1.GetUserResponse.user:type_name -> proto.v1.User
-	0,  // 2: proto.v1.UpdateMeRequest.user:type_name -> proto.v1.User
-	9,  // 3: proto.v1.UpdateMeRequest.field_mask:type_name -> google.protobuf.FieldMask
-	0,  // 4: proto.v1.UpdateMeResponse.user:type_name -> proto.v1.User
-	0,  // 5: proto.v1.ListUsersResponse.users:type_name -> proto.v1.User
-	1,  // 6: proto.v1.UserService.GetMe:input_type -> proto.v1.GetMeRequest
-	3,  // 7: proto.v1.UserService.GetUser:input_type -> proto.v1.GetUserRequest
-	5,  // 8: proto.v1.UserService.UpdateMe:input_type -> proto.v1.UpdateMeRequest
-	7,  // 9: proto.v1.UserService.ListUsers:input_type -> proto.v1.ListUsersRequest
-	2,  // 10: proto.v1.UserService.GetMe:output_type -> proto.v1.GetMeResponse
-	4,  // 11: proto.v1.UserService.GetUser:output_type -> proto.v1.GetUserResponse
-	6,  // 12: proto.v1.UserService.UpdateMe:output_type -> proto.v1.UpdateMeResponse
-	8,  // 13: proto.v1.UserService.ListUsers:output_type -> proto.v1.ListUsersResponse
-	10, // [10:14] is the sub-list for method output_type
-	6,  // [6:10] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	0, // 0: proto.v1.GetMeResponse.user:type_name -> proto.v1.User
+	0, // 1: proto.v1.GetUserResponse.user:type_name -> proto.v1.User
+	0, // 2: proto.v1.UpdateMeResponse.user:type_name -> proto.v1.User
+	0, // 3: proto.v1.ListUsersResponse.users:type_name -> proto.v1.User
+	1, // 4: proto.v1.UserService.GetMe:input_type -> proto.v1.GetMeRequest
+	3, // 5: proto.v1.UserService.GetUser:input_type -> proto.v1.GetUserRequest
+	5, // 6: proto.v1.UserService.UpdateMe:input_type -> proto.v1.UpdateMeRequest
+	7, // 7: proto.v1.UserService.ListUsers:input_type -> proto.v1.ListUsersRequest
+	2, // 8: proto.v1.UserService.GetMe:output_type -> proto.v1.GetMeResponse
+	4, // 9: proto.v1.UserService.GetUser:output_type -> proto.v1.GetUserResponse
+	6, // 10: proto.v1.UserService.UpdateMe:output_type -> proto.v1.UpdateMeResponse
+	8, // 11: proto.v1.UserService.ListUsers:output_type -> proto.v1.ListUsersResponse
+	8, // [8:12] is the sub-list for method output_type
+	4, // [4:8] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_v1_user_proto_init() }

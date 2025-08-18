@@ -14,8 +14,7 @@ func GetAllowedDomains() map[string]struct{} {
 	//creating maps to store all allowed domains of length domains
 	allowed := make(map[string]struct{}, len(domains))
 
-
-	for _, d := range domains{
+	for _, d := range domains {
 		//to remove the whitespaces from the domains
 		d = strings.ToLower(strings.TrimSpace(d))
 		if d != "" {
@@ -35,7 +34,5 @@ func GetJWTSecret() []byte {
 }
 
 func ProvideGoogleClientID() string {
-    return os.Getenv("GOOGLE_CLIENT_ID")
+	return os.Getenv("GOOGLE_CLIENT_ID")
 }
-
-

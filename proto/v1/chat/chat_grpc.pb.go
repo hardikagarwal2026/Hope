@@ -23,20 +23,16 @@ const (
 	ChatService_ListMessagesByRide_FullMethodName   = "/proto.v1.ChatService/ListMessagesByRide"
 	ChatService_ListMessagesBySender_FullMethodName = "/proto.v1.ChatService/ListMessagesBySender"
 	ChatService_ListChatsForUser_FullMethodName     = "/proto.v1.ChatService/ListChatsForUser"
-	ChatService_DeleteMessage_FullMethodName        = "/proto.v1.ChatService/DeleteMessage"
 )
 
 // ChatServiceClient is the client API for ChatService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// ChatService manages ride-specific chat between matched rider and driver.
 type ChatServiceClient interface {
 	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error)
 	ListMessagesByRide(ctx context.Context, in *ListMessagesByRideRequest, opts ...grpc.CallOption) (*ListMessagesByRideResponse, error)
 	ListMessagesBySender(ctx context.Context, in *ListMessagesBySenderRequest, opts ...grpc.CallOption) (*ListMessagesBySenderResponse, error)
 	ListChatsForUser(ctx context.Context, in *ListChatsForUserRequest, opts ...grpc.CallOption) (*ListChatsForUserResponse, error)
-	DeleteMessage(ctx context.Context, in *DeleteMessageRequest, opts ...grpc.CallOption) (*DeleteMessageResponse, error)
 }
 
 type chatServiceClient struct {
@@ -87,27 +83,14 @@ func (c *chatServiceClient) ListChatsForUser(ctx context.Context, in *ListChatsF
 	return out, nil
 }
 
-func (c *chatServiceClient) DeleteMessage(ctx context.Context, in *DeleteMessageRequest, opts ...grpc.CallOption) (*DeleteMessageResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteMessageResponse)
-	err := c.cc.Invoke(ctx, ChatService_DeleteMessage_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ChatServiceServer is the server API for ChatService service.
 // All implementations must embed UnimplementedChatServiceServer
 // for forward compatibility.
-//
-// ChatService manages ride-specific chat between matched rider and driver.
 type ChatServiceServer interface {
 	SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error)
 	ListMessagesByRide(context.Context, *ListMessagesByRideRequest) (*ListMessagesByRideResponse, error)
 	ListMessagesBySender(context.Context, *ListMessagesBySenderRequest) (*ListMessagesBySenderResponse, error)
 	ListChatsForUser(context.Context, *ListChatsForUserRequest) (*ListChatsForUserResponse, error)
-	DeleteMessage(context.Context, *DeleteMessageRequest) (*DeleteMessageResponse, error)
 	mustEmbedUnimplementedChatServiceServer()
 }
 
@@ -129,9 +112,6 @@ func (UnimplementedChatServiceServer) ListMessagesBySender(context.Context, *Lis
 }
 func (UnimplementedChatServiceServer) ListChatsForUser(context.Context, *ListChatsForUserRequest) (*ListChatsForUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListChatsForUser not implemented")
-}
-func (UnimplementedChatServiceServer) DeleteMessage(context.Context, *DeleteMessageRequest) (*DeleteMessageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteMessage not implemented")
 }
 func (UnimplementedChatServiceServer) mustEmbedUnimplementedChatServiceServer() {}
 func (UnimplementedChatServiceServer) testEmbeddedByValue()                     {}
@@ -226,24 +206,6 @@ func _ChatService_ListChatsForUser_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChatService_DeleteMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteMessageRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatServiceServer).DeleteMessage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ChatService_DeleteMessage_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).DeleteMessage(ctx, req.(*DeleteMessageRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ChatService_ServiceDesc is the grpc.ServiceDesc for ChatService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,10 +228,6 @@ var ChatService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListChatsForUser",
 			Handler:    _ChatService_ListChatsForUser_Handler,
-		},
-		{
-			MethodName: "DeleteMessage",
-			Handler:    _ChatService_DeleteMessage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,14 +1,39 @@
 package db
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"strings"
+	"time"
+)
 
-// user is the student here, who is using the platform
-// primary key is the main identifier
 type User struct {
-	ID       string    `gorm:"primaryKey"`           //will get it unique from uuid
-	Name     string    `gorm:"size:191"`             // name of the student
-	Email    string    `gorm:"uniqueIndex;size:191"` //unique for all students, it is not the main identifier still no two rows can have same email
-	PhotoURL string    `gorm:"size:191"`             // url of the photo, will store in mongo later
-	Geohash  string    `gorm:"size:64"`              // lat, long into geohash for proximity search
-	LastSeen time.Time //last time online
+	ID       string    `gorm:"primaryKey;size:191"`
+	Name     string    `gorm:"size:191"`
+	Email    string    `gorm:"uniqueIndex;size:191"`
+	PhotoURL string    `gorm:"size:191"`
+	Geohash  string    `gorm:"size:64;index"`
+	LastSeen time.Time `gorm:"index"`
+
+	Location *UserLocation `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+
+	RideOffers   []RideOffer   `gorm:"foreignKey:DriverID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+	RideRequests []RideRequest `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+
+	u.Email = strings.TrimSpace(strings.ToLower(u.Email))
+	if u.LastSeen.IsZero() {
+		u.LastSeen = time.Now()
+	}
+	return nil
+}
+
+func (u *User) BeforeSave(tx *gorm.DB) (err error) {
+	u.Email = strings.TrimSpace(strings.ToLower(u.Email))
+	return nil
+}
+
+func (u *User) AfterCreate(tx *gorm.DB) (err error) {
+	return nil
 }

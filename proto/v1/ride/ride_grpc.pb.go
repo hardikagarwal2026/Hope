@@ -24,29 +24,31 @@ const (
 	RideService_UpdateOffer_FullMethodName         = "/proto.v1.RideService/UpdateOffer"
 	RideService_DeleteOffer_FullMethodName         = "/proto.v1.RideService/DeleteOffer"
 	RideService_ListNearbyOffers_FullMethodName    = "/proto.v1.RideService/ListNearbyOffers"
+	RideService_ListMyOffers_FullMethodName        = "/proto.v1.RideService/ListMyOffers"
 	RideService_CreateRequest_FullMethodName       = "/proto.v1.RideService/CreateRequest"
 	RideService_GetRequest_FullMethodName          = "/proto.v1.RideService/GetRequest"
 	RideService_UpdateRequestStatus_FullMethodName = "/proto.v1.RideService/UpdateRequestStatus"
 	RideService_DeleteRequest_FullMethodName       = "/proto.v1.RideService/DeleteRequest"
 	RideService_ListNearbyRequests_FullMethodName  = "/proto.v1.RideService/ListNearbyRequests"
+	RideService_ListMyRequests_FullMethodName      = "/proto.v1.RideService/ListMyRequests"
 )
 
 // RideServiceClient is the client API for RideService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RideServiceClient interface {
-	// RideOffer endpoints
 	CreateOffer(ctx context.Context, in *CreateOfferRequest, opts ...grpc.CallOption) (*CreateOfferResponse, error)
 	GetOffer(ctx context.Context, in *GetOfferRequest, opts ...grpc.CallOption) (*GetOfferResponse, error)
 	UpdateOffer(ctx context.Context, in *UpdateOfferRequest, opts ...grpc.CallOption) (*UpdateOfferResponse, error)
 	DeleteOffer(ctx context.Context, in *DeleteOfferRequest, opts ...grpc.CallOption) (*DeleteOfferResponse, error)
 	ListNearbyOffers(ctx context.Context, in *ListNearbyOffersRequest, opts ...grpc.CallOption) (*ListNearbyOffersResponse, error)
-	// RideRequest endpoints
+	ListMyOffers(ctx context.Context, in *ListMyOffersRequest, opts ...grpc.CallOption) (*ListMyOffersResponse, error)
 	CreateRequest(ctx context.Context, in *CreateRequestRequest, opts ...grpc.CallOption) (*CreateRequestResponse, error)
 	GetRequest(ctx context.Context, in *GetRequestRequest, opts ...grpc.CallOption) (*GetRequestResponse, error)
 	UpdateRequestStatus(ctx context.Context, in *UpdateRequestStatusRequest, opts ...grpc.CallOption) (*UpdateRequestStatusResponse, error)
 	DeleteRequest(ctx context.Context, in *DeleteRequestRequest, opts ...grpc.CallOption) (*DeleteRequestResponse, error)
 	ListNearbyRequests(ctx context.Context, in *ListNearbyRequestsRequest, opts ...grpc.CallOption) (*ListNearbyRequestsResponse, error)
+	ListMyRequests(ctx context.Context, in *ListMyRequestsRequest, opts ...grpc.CallOption) (*ListMyRequestsResponse, error)
 }
 
 type rideServiceClient struct {
@@ -107,6 +109,16 @@ func (c *rideServiceClient) ListNearbyOffers(ctx context.Context, in *ListNearby
 	return out, nil
 }
 
+func (c *rideServiceClient) ListMyOffers(ctx context.Context, in *ListMyOffersRequest, opts ...grpc.CallOption) (*ListMyOffersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMyOffersResponse)
+	err := c.cc.Invoke(ctx, RideService_ListMyOffers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *rideServiceClient) CreateRequest(ctx context.Context, in *CreateRequestRequest, opts ...grpc.CallOption) (*CreateRequestResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateRequestResponse)
@@ -157,22 +169,32 @@ func (c *rideServiceClient) ListNearbyRequests(ctx context.Context, in *ListNear
 	return out, nil
 }
 
+func (c *rideServiceClient) ListMyRequests(ctx context.Context, in *ListMyRequestsRequest, opts ...grpc.CallOption) (*ListMyRequestsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMyRequestsResponse)
+	err := c.cc.Invoke(ctx, RideService_ListMyRequests_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RideServiceServer is the server API for RideService service.
 // All implementations must embed UnimplementedRideServiceServer
 // for forward compatibility.
 type RideServiceServer interface {
-	// RideOffer endpoints
 	CreateOffer(context.Context, *CreateOfferRequest) (*CreateOfferResponse, error)
 	GetOffer(context.Context, *GetOfferRequest) (*GetOfferResponse, error)
 	UpdateOffer(context.Context, *UpdateOfferRequest) (*UpdateOfferResponse, error)
 	DeleteOffer(context.Context, *DeleteOfferRequest) (*DeleteOfferResponse, error)
 	ListNearbyOffers(context.Context, *ListNearbyOffersRequest) (*ListNearbyOffersResponse, error)
-	// RideRequest endpoints
+	ListMyOffers(context.Context, *ListMyOffersRequest) (*ListMyOffersResponse, error)
 	CreateRequest(context.Context, *CreateRequestRequest) (*CreateRequestResponse, error)
 	GetRequest(context.Context, *GetRequestRequest) (*GetRequestResponse, error)
 	UpdateRequestStatus(context.Context, *UpdateRequestStatusRequest) (*UpdateRequestStatusResponse, error)
 	DeleteRequest(context.Context, *DeleteRequestRequest) (*DeleteRequestResponse, error)
 	ListNearbyRequests(context.Context, *ListNearbyRequestsRequest) (*ListNearbyRequestsResponse, error)
+	ListMyRequests(context.Context, *ListMyRequestsRequest) (*ListMyRequestsResponse, error)
 	mustEmbedUnimplementedRideServiceServer()
 }
 
@@ -198,6 +220,9 @@ func (UnimplementedRideServiceServer) DeleteOffer(context.Context, *DeleteOfferR
 func (UnimplementedRideServiceServer) ListNearbyOffers(context.Context, *ListNearbyOffersRequest) (*ListNearbyOffersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListNearbyOffers not implemented")
 }
+func (UnimplementedRideServiceServer) ListMyOffers(context.Context, *ListMyOffersRequest) (*ListMyOffersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMyOffers not implemented")
+}
 func (UnimplementedRideServiceServer) CreateRequest(context.Context, *CreateRequestRequest) (*CreateRequestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateRequest not implemented")
 }
@@ -212,6 +237,9 @@ func (UnimplementedRideServiceServer) DeleteRequest(context.Context, *DeleteRequ
 }
 func (UnimplementedRideServiceServer) ListNearbyRequests(context.Context, *ListNearbyRequestsRequest) (*ListNearbyRequestsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListNearbyRequests not implemented")
+}
+func (UnimplementedRideServiceServer) ListMyRequests(context.Context, *ListMyRequestsRequest) (*ListMyRequestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMyRequests not implemented")
 }
 func (UnimplementedRideServiceServer) mustEmbedUnimplementedRideServiceServer() {}
 func (UnimplementedRideServiceServer) testEmbeddedByValue()                     {}
@@ -324,6 +352,24 @@ func _RideService_ListNearbyOffers_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RideService_ListMyOffers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMyOffersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RideServiceServer).ListMyOffers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RideService_ListMyOffers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RideServiceServer).ListMyOffers(ctx, req.(*ListMyOffersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RideService_CreateRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateRequestRequest)
 	if err := dec(in); err != nil {
@@ -414,6 +460,24 @@ func _RideService_ListNearbyRequests_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RideService_ListMyRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMyRequestsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RideServiceServer).ListMyRequests(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RideService_ListMyRequests_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RideServiceServer).ListMyRequests(ctx, req.(*ListMyRequestsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RideService_ServiceDesc is the grpc.ServiceDesc for RideService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -442,6 +506,10 @@ var RideService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _RideService_ListNearbyOffers_Handler,
 		},
 		{
+			MethodName: "ListMyOffers",
+			Handler:    _RideService_ListMyOffers_Handler,
+		},
+		{
 			MethodName: "CreateRequest",
 			Handler:    _RideService_CreateRequest_Handler,
 		},
@@ -460,6 +528,10 @@ var RideService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListNearbyRequests",
 			Handler:    _RideService_ListNearbyRequests_Handler,
+		},
+		{
+			MethodName: "ListMyRequests",
+			Handler:    _RideService_ListMyRequests_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

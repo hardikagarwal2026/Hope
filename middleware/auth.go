@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"context"
-	"strings"
 	"github.com/golang-jwt/jwt"
+	"strings"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -11,41 +11,40 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-//context key to be injected along with token,
+// context key to be injected along with token,
 // user_id and mail will be injected to context so that handler can gets its
-//value for authenticated requests
+// value for authenticated requests
 type ctxKey string
-const(
+
+const (
 	ctxUserIDKey ctxKey = "user_id"
 	ctxEmailKey  ctxKey = "email"
 )
 
-//config containd=s JWTSecret and public metods
-//public methids are omiitted by middleware, they dont neeed
+// config containd=s JWTSecret and public metods
+// public methids are omiitted by middleware, they dont neeed
 // tobe passed through the middleware
-type Config struct{
-	JWTSecret   []byte
-	PublicMethods map[string]bool   //map["proto/v1/auth.AuthService/Login"]=true  
+type Config struct {
+	JWTSecret     []byte
+	PublicMethods map[string]bool //map["proto/v1/auth.AuthService/Login"]=true
 }
 
-//Identity extracted after validating backend JWT
+// Identity extracted after validating backend JWT
 type Identity struct {
 	UserID string
 	Email  string
 }
 
-
-//Validate token does HS256 verification and extracts the identity 
-//from the JWT
-func ValidateToken(_ context.Context, tokenStr string, secret []byte)(Identity, error){
+// Validate token does HS256 verification and extracts the identity
+// from the JWT
+func ValidateToken(_ context.Context, tokenStr string, secret []byte) (Identity, error) {
 	//if token is empty, then error
 	if tokenStr == "" {
 		return Identity{}, status.Error(codes.Unauthenticated, "Unexpected signing method")
 	}
-	
 
 	// Reads a JWT string, Decodes it into a structured token, Verifies its signature using a provided key, Tells you whether it’s valid.
-	tok , err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
+	tok, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, status.Error(codes.Unauthenticated, "unexpected signing method")
 		}
@@ -73,25 +72,22 @@ func ValidateToken(_ context.Context, tokenStr string, secret []byte)(Identity, 
 
 }
 
-
-//UserIDFromContext is used by handlers to read identity set byb the intercptor
-func UserIDFromContext(ctx context.Context)(string, bool){
+// UserIDFromContext is used by handlers to read identity set byb the intercptor
+func UserIDFromContext(ctx context.Context) (string, bool) {
 	v := ctx.Value(ctxUserIDKey)
 	s, ok := v.(string)
 	return s, ok && s != ""
 }
-func EmailFromContext(ctx context.Context)(string, bool){
+func EmailFromContext(ctx context.Context) (string, bool) {
 	v := ctx.Value(ctxEmailKey)
 	s, ok := v.(string)
-	return s, ok && s!= ""
+	return s, ok && s != ""
 }
 
-
-
-//AuthInterceptor is like a central gatekeeper for all non-public RPC
+// AuthInterceptor is like a central gatekeeper for all non-public RPC
 func AuthInterceptor(cfg Config) grpc.UnaryServerInterceptor {
 	secret := cfg.JWTSecret
-	
+
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		//bypass for public method
 		if cfg.PublicMethods[info.FullMethod] {
@@ -120,7 +116,7 @@ func AuthInterceptor(cfg Config) grpc.UnaryServerInterceptor {
 		}
 
 		ctx = context.WithValue(ctx, ctxUserIDKey, id.UserID)
-		if id.Email != ""{
+		if id.Email != "" {
 			ctx = context.WithValue(ctx, ctxEmailKey, id.Email)
 		}
 		return handler(ctx, req)

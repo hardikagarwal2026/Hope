@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	ReviewService_SubmitReview_FullMethodName      = "/proto.v1.ReviewService/SubmitReview"
 	ReviewService_ListReviewsByUser_FullMethodName = "/proto.v1.ReviewService/ListReviewsByUser"
+	ReviewService_ListMyReviews_FullMethodName     = "/proto.v1.ReviewService/ListMyReviews"
 	ReviewService_ListReviewsByRide_FullMethodName = "/proto.v1.ReviewService/ListReviewsByRide"
 	ReviewService_DeleteReview_FullMethodName      = "/proto.v1.ReviewService/DeleteReview"
 )
@@ -31,6 +32,7 @@ const (
 type ReviewServiceClient interface {
 	SubmitReview(ctx context.Context, in *SubmitReviewRequest, opts ...grpc.CallOption) (*SubmitReviewResponse, error)
 	ListReviewsByUser(ctx context.Context, in *ListReviewsByUserRequest, opts ...grpc.CallOption) (*ListReviewsByUserResponse, error)
+	ListMyReviews(ctx context.Context, in *ListMyReviewsRequest, opts ...grpc.CallOption) (*ListMyReviewsResponse, error)
 	ListReviewsByRide(ctx context.Context, in *ListReviewsByRideRequest, opts ...grpc.CallOption) (*ListReviewsByRideResponse, error)
 	DeleteReview(ctx context.Context, in *DeleteReviewRequest, opts ...grpc.CallOption) (*DeleteReviewResponse, error)
 }
@@ -63,6 +65,16 @@ func (c *reviewServiceClient) ListReviewsByUser(ctx context.Context, in *ListRev
 	return out, nil
 }
 
+func (c *reviewServiceClient) ListMyReviews(ctx context.Context, in *ListMyReviewsRequest, opts ...grpc.CallOption) (*ListMyReviewsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMyReviewsResponse)
+	err := c.cc.Invoke(ctx, ReviewService_ListMyReviews_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *reviewServiceClient) ListReviewsByRide(ctx context.Context, in *ListReviewsByRideRequest, opts ...grpc.CallOption) (*ListReviewsByRideResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListReviewsByRideResponse)
@@ -89,6 +101,7 @@ func (c *reviewServiceClient) DeleteReview(ctx context.Context, in *DeleteReview
 type ReviewServiceServer interface {
 	SubmitReview(context.Context, *SubmitReviewRequest) (*SubmitReviewResponse, error)
 	ListReviewsByUser(context.Context, *ListReviewsByUserRequest) (*ListReviewsByUserResponse, error)
+	ListMyReviews(context.Context, *ListMyReviewsRequest) (*ListMyReviewsResponse, error)
 	ListReviewsByRide(context.Context, *ListReviewsByRideRequest) (*ListReviewsByRideResponse, error)
 	DeleteReview(context.Context, *DeleteReviewRequest) (*DeleteReviewResponse, error)
 	mustEmbedUnimplementedReviewServiceServer()
@@ -106,6 +119,9 @@ func (UnimplementedReviewServiceServer) SubmitReview(context.Context, *SubmitRev
 }
 func (UnimplementedReviewServiceServer) ListReviewsByUser(context.Context, *ListReviewsByUserRequest) (*ListReviewsByUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListReviewsByUser not implemented")
+}
+func (UnimplementedReviewServiceServer) ListMyReviews(context.Context, *ListMyReviewsRequest) (*ListMyReviewsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMyReviews not implemented")
 }
 func (UnimplementedReviewServiceServer) ListReviewsByRide(context.Context, *ListReviewsByRideRequest) (*ListReviewsByRideResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListReviewsByRide not implemented")
@@ -170,6 +186,24 @@ func _ReviewService_ListReviewsByUser_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ReviewService_ListMyReviews_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMyReviewsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReviewServiceServer).ListMyReviews(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ReviewService_ListMyReviews_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReviewServiceServer).ListMyReviews(ctx, req.(*ListMyReviewsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ReviewService_ListReviewsByRide_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListReviewsByRideRequest)
 	if err := dec(in); err != nil {
@@ -220,6 +254,10 @@ var ReviewService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListReviewsByUser",
 			Handler:    _ReviewService_ListReviewsByUser_Handler,
+		},
+		{
+			MethodName: "ListMyReviews",
+			Handler:    _ReviewService_ListMyReviews_Handler,
 		},
 		{
 			MethodName: "ListReviewsByRide",

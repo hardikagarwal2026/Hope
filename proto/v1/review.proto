@@ -1,64 +1,63 @@
 syntax = "proto3";
+
 package proto.v1;
 
 option go_package = "./proto/v1/review";
 
 import "google/protobuf/timestamp.proto";
 
-service ReviewService {
-    rpc SubmitReview(SubmitReviewRequest) returns (SubmitReviewResponse) {}
-    rpc ListReviewsByUser(ListReviewsByUserRequest) returns (ListReviewsByUserResponse) {}
-    rpc ListReviewsByRide(ListReviewsByRideRequest) returns (ListReviewsByRideResponse) {}
-    rpc DeleteReview(DeleteReviewRequest) returns (DeleteReviewResponse) {}
-}
-
-
 message Review {
-  string id = 1;                                 
-  string ride_id = 2;                             
-  string from_user_id = 3;                        
-  string to_user_id = 4;                          
-  int32  score = 5;                               // 1-5 rating
-  string comment = 6;                             
-  google.protobuf.Timestamp created_at = 7;       // Server-assigned
+  string id = 1;
+  string ride_id = 2;
+  string from_user_id = 3;
+  string to_user_id = 4;
+  int32 score = 5;
+  string comment = 6;
+  google.protobuf.Timestamp created_at = 7;
 }
 
+service ReviewService {
+  rpc SubmitReview (SubmitReviewRequest) returns (SubmitReviewResponse) {}
+  rpc ListReviewsByUser (ListReviewsByUserRequest) returns (ListReviewsByUserResponse) {}
+  rpc ListMyReviews (ListMyReviewsRequest) returns (ListMyReviewsResponse) {}
+  rpc ListReviewsByRide (ListReviewsByRideRequest) returns (ListReviewsByRideResponse) {}
+  rpc DeleteReview (DeleteReviewRequest) returns (DeleteReviewResponse) {}
+}
 
-//SubmitReview
 message SubmitReviewRequest {
-    Review review = 1;     //Provide ride_id, from_user_id, to_user_id, score, comment, Server sets id and created_at
+  string ride_id = 1;
+  string to_user_id = 2;
+  int32 score = 3;
+  string comment = 4;
 }
 message SubmitReviewResponse {
-    Review review = 1; //Review along with id and created_at
+  Review review = 1;
 }
 
-
-//ListReviewsByUser
-message ListReviewsByUserRequest{
-  string user_id = 1;   
-  int32  limit = 2;     
-  int32  offset = 3;    
+message ListReviewsByUserRequest {
+  string user_id = 1;
+  int32 limit = 2;
 }
-message ListReviewsByUserResponse{
-    repeated Review reviews = 1;
+message ListReviewsByUserResponse {
+  repeated Review reviews = 1;
 }
 
+message ListMyReviewsRequest {}
+message ListMyReviewsResponse {
+  repeated Review reviews = 1;
+}
 
-//ListReviewsByRide
 message ListReviewsByRideRequest {
   string ride_id = 1;
+  int32 limit = 2;
 }
 message ListReviewsByRideResponse {
   repeated Review reviews = 1;
 }
 
-// DeleteReview
 message DeleteReviewRequest {
   string review_id = 1;
 }
 message DeleteReviewResponse {
   bool success = 1;
 }
-
-
-

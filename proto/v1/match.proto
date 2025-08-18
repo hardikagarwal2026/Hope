@@ -17,6 +17,7 @@ message Match {
 
 service MatchService {
   rpc RequestToJoin      (RequestToJoinRequest)      returns (RequestToJoinResponse);
+  rpc AcceptRideRequest  (AcceptRideRequestRequest)  returns (AcceptRideRequestResponse);
   rpc AcceptRequest      (AcceptRequestRequest)      returns (AcceptRequestResponse);
   rpc RejectRequest      (RejectRequestRequest)      returns (RejectRequestResponse);
   rpc CompleteMatch      (CompleteMatchRequest)      returns (CompleteMatchResponse);
@@ -31,6 +32,13 @@ message RequestToJoinRequest {
 }
 message RequestToJoinResponse {
   Match match = 1;
+}
+
+message AcceptRideRequestRequest { 
+  string request_id = 1; 
+}
+message AcceptRideRequestResponse { 
+  Match match = 1; 
 }
 
 message AcceptRequestRequest {

@@ -194,6 +194,94 @@ func (x *RequestToJoinResponse) GetMatch() *Match {
 	return nil
 }
 
+type AcceptRideRequestRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RequestId     string                 `protobuf:"bytes,1,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AcceptRideRequestRequest) Reset() {
+	*x = AcceptRideRequestRequest{}
+	mi := &file_proto_v1_match_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AcceptRideRequestRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AcceptRideRequestRequest) ProtoMessage() {}
+
+func (x *AcceptRideRequestRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_v1_match_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AcceptRideRequestRequest.ProtoReflect.Descriptor instead.
+func (*AcceptRideRequestRequest) Descriptor() ([]byte, []int) {
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *AcceptRideRequestRequest) GetRequestId() string {
+	if x != nil {
+		return x.RequestId
+	}
+	return ""
+}
+
+type AcceptRideRequestResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Match         *Match                 `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AcceptRideRequestResponse) Reset() {
+	*x = AcceptRideRequestResponse{}
+	mi := &file_proto_v1_match_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AcceptRideRequestResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AcceptRideRequestResponse) ProtoMessage() {}
+
+func (x *AcceptRideRequestResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_v1_match_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AcceptRideRequestResponse.ProtoReflect.Descriptor instead.
+func (*AcceptRideRequestResponse) Descriptor() ([]byte, []int) {
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *AcceptRideRequestResponse) GetMatch() *Match {
+	if x != nil {
+		return x.Match
+	}
+	return nil
+}
+
 type AcceptRequestRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	MatchId       string                 `protobuf:"bytes,1,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
@@ -203,7 +291,7 @@ type AcceptRequestRequest struct {
 
 func (x *AcceptRequestRequest) Reset() {
 	*x = AcceptRequestRequest{}
-	mi := &file_proto_v1_match_proto_msgTypes[3]
+	mi := &file_proto_v1_match_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -215,7 +303,7 @@ func (x *AcceptRequestRequest) String() string {
 func (*AcceptRequestRequest) ProtoMessage() {}
 
 func (x *AcceptRequestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[3]
+	mi := &file_proto_v1_match_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -228,7 +316,7 @@ func (x *AcceptRequestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AcceptRequestRequest.ProtoReflect.Descriptor instead.
 func (*AcceptRequestRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{3}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *AcceptRequestRequest) GetMatchId() string {
@@ -247,7 +335,7 @@ type AcceptRequestResponse struct {
 
 func (x *AcceptRequestResponse) Reset() {
 	*x = AcceptRequestResponse{}
-	mi := &file_proto_v1_match_proto_msgTypes[4]
+	mi := &file_proto_v1_match_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -259,7 +347,7 @@ func (x *AcceptRequestResponse) String() string {
 func (*AcceptRequestResponse) ProtoMessage() {}
 
 func (x *AcceptRequestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[4]
+	mi := &file_proto_v1_match_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -272,7 +360,7 @@ func (x *AcceptRequestResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AcceptRequestResponse.ProtoReflect.Descriptor instead.
 func (*AcceptRequestResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{4}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *AcceptRequestResponse) GetMatch() *Match {
@@ -291,7 +379,7 @@ type RejectRequestRequest struct {
 
 func (x *RejectRequestRequest) Reset() {
 	*x = RejectRequestRequest{}
-	mi := &file_proto_v1_match_proto_msgTypes[5]
+	mi := &file_proto_v1_match_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -303,7 +391,7 @@ func (x *RejectRequestRequest) String() string {
 func (*RejectRequestRequest) ProtoMessage() {}
 
 func (x *RejectRequestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[5]
+	mi := &file_proto_v1_match_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -316,7 +404,7 @@ func (x *RejectRequestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RejectRequestRequest.ProtoReflect.Descriptor instead.
 func (*RejectRequestRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{5}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *RejectRequestRequest) GetMatchId() string {
@@ -335,7 +423,7 @@ type RejectRequestResponse struct {
 
 func (x *RejectRequestResponse) Reset() {
 	*x = RejectRequestResponse{}
-	mi := &file_proto_v1_match_proto_msgTypes[6]
+	mi := &file_proto_v1_match_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -347,7 +435,7 @@ func (x *RejectRequestResponse) String() string {
 func (*RejectRequestResponse) ProtoMessage() {}
 
 func (x *RejectRequestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[6]
+	mi := &file_proto_v1_match_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -360,7 +448,7 @@ func (x *RejectRequestResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RejectRequestResponse.ProtoReflect.Descriptor instead.
 func (*RejectRequestResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{6}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *RejectRequestResponse) GetMatch() *Match {
@@ -379,7 +467,7 @@ type CompleteMatchRequest struct {
 
 func (x *CompleteMatchRequest) Reset() {
 	*x = CompleteMatchRequest{}
-	mi := &file_proto_v1_match_proto_msgTypes[7]
+	mi := &file_proto_v1_match_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -391,7 +479,7 @@ func (x *CompleteMatchRequest) String() string {
 func (*CompleteMatchRequest) ProtoMessage() {}
 
 func (x *CompleteMatchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[7]
+	mi := &file_proto_v1_match_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -404,7 +492,7 @@ func (x *CompleteMatchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompleteMatchRequest.ProtoReflect.Descriptor instead.
 func (*CompleteMatchRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{7}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CompleteMatchRequest) GetMatchId() string {
@@ -423,7 +511,7 @@ type CompleteMatchResponse struct {
 
 func (x *CompleteMatchResponse) Reset() {
 	*x = CompleteMatchResponse{}
-	mi := &file_proto_v1_match_proto_msgTypes[8]
+	mi := &file_proto_v1_match_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -435,7 +523,7 @@ func (x *CompleteMatchResponse) String() string {
 func (*CompleteMatchResponse) ProtoMessage() {}
 
 func (x *CompleteMatchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[8]
+	mi := &file_proto_v1_match_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -448,7 +536,7 @@ func (x *CompleteMatchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompleteMatchResponse.ProtoReflect.Descriptor instead.
 func (*CompleteMatchResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{8}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *CompleteMatchResponse) GetMatch() *Match {
@@ -467,7 +555,7 @@ type GetMatchRequest struct {
 
 func (x *GetMatchRequest) Reset() {
 	*x = GetMatchRequest{}
-	mi := &file_proto_v1_match_proto_msgTypes[9]
+	mi := &file_proto_v1_match_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -479,7 +567,7 @@ func (x *GetMatchRequest) String() string {
 func (*GetMatchRequest) ProtoMessage() {}
 
 func (x *GetMatchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[9]
+	mi := &file_proto_v1_match_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -492,7 +580,7 @@ func (x *GetMatchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMatchRequest.ProtoReflect.Descriptor instead.
 func (*GetMatchRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{9}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GetMatchRequest) GetMatchId() string {
@@ -511,7 +599,7 @@ type GetMatchResponse struct {
 
 func (x *GetMatchResponse) Reset() {
 	*x = GetMatchResponse{}
-	mi := &file_proto_v1_match_proto_msgTypes[10]
+	mi := &file_proto_v1_match_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -523,7 +611,7 @@ func (x *GetMatchResponse) String() string {
 func (*GetMatchResponse) ProtoMessage() {}
 
 func (x *GetMatchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[10]
+	mi := &file_proto_v1_match_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -536,7 +624,7 @@ func (x *GetMatchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMatchResponse.ProtoReflect.Descriptor instead.
 func (*GetMatchResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{10}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetMatchResponse) GetMatch() *Match {
@@ -555,7 +643,7 @@ type ListMatchesByRideRequest struct {
 
 func (x *ListMatchesByRideRequest) Reset() {
 	*x = ListMatchesByRideRequest{}
-	mi := &file_proto_v1_match_proto_msgTypes[11]
+	mi := &file_proto_v1_match_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -567,7 +655,7 @@ func (x *ListMatchesByRideRequest) String() string {
 func (*ListMatchesByRideRequest) ProtoMessage() {}
 
 func (x *ListMatchesByRideRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[11]
+	mi := &file_proto_v1_match_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -580,7 +668,7 @@ func (x *ListMatchesByRideRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMatchesByRideRequest.ProtoReflect.Descriptor instead.
 func (*ListMatchesByRideRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{11}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *ListMatchesByRideRequest) GetRideId() string {
@@ -599,7 +687,7 @@ type ListMatchesByRideResponse struct {
 
 func (x *ListMatchesByRideResponse) Reset() {
 	*x = ListMatchesByRideResponse{}
-	mi := &file_proto_v1_match_proto_msgTypes[12]
+	mi := &file_proto_v1_match_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -611,7 +699,7 @@ func (x *ListMatchesByRideResponse) String() string {
 func (*ListMatchesByRideResponse) ProtoMessage() {}
 
 func (x *ListMatchesByRideResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[12]
+	mi := &file_proto_v1_match_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -624,7 +712,7 @@ func (x *ListMatchesByRideResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMatchesByRideResponse.ProtoReflect.Descriptor instead.
 func (*ListMatchesByRideResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{12}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ListMatchesByRideResponse) GetMatches() []*Match {
@@ -643,7 +731,7 @@ type ListMatchesByRiderRequest struct {
 
 func (x *ListMatchesByRiderRequest) Reset() {
 	*x = ListMatchesByRiderRequest{}
-	mi := &file_proto_v1_match_proto_msgTypes[13]
+	mi := &file_proto_v1_match_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -655,7 +743,7 @@ func (x *ListMatchesByRiderRequest) String() string {
 func (*ListMatchesByRiderRequest) ProtoMessage() {}
 
 func (x *ListMatchesByRiderRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[13]
+	mi := &file_proto_v1_match_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -668,7 +756,7 @@ func (x *ListMatchesByRiderRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMatchesByRiderRequest.ProtoReflect.Descriptor instead.
 func (*ListMatchesByRiderRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{13}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *ListMatchesByRiderRequest) GetRiderId() string {
@@ -687,7 +775,7 @@ type ListMatchesByRiderResponse struct {
 
 func (x *ListMatchesByRiderResponse) Reset() {
 	*x = ListMatchesByRiderResponse{}
-	mi := &file_proto_v1_match_proto_msgTypes[14]
+	mi := &file_proto_v1_match_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -699,7 +787,7 @@ func (x *ListMatchesByRiderResponse) String() string {
 func (*ListMatchesByRiderResponse) ProtoMessage() {}
 
 func (x *ListMatchesByRiderResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[14]
+	mi := &file_proto_v1_match_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -712,7 +800,7 @@ func (x *ListMatchesByRiderResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMatchesByRiderResponse.ProtoReflect.Descriptor instead.
 func (*ListMatchesByRiderResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{14}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *ListMatchesByRiderResponse) GetMatches() []*Match {
@@ -730,7 +818,7 @@ type ListMyMatchesRequest struct {
 
 func (x *ListMyMatchesRequest) Reset() {
 	*x = ListMyMatchesRequest{}
-	mi := &file_proto_v1_match_proto_msgTypes[15]
+	mi := &file_proto_v1_match_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -742,7 +830,7 @@ func (x *ListMyMatchesRequest) String() string {
 func (*ListMyMatchesRequest) ProtoMessage() {}
 
 func (x *ListMyMatchesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[15]
+	mi := &file_proto_v1_match_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -755,7 +843,7 @@ func (x *ListMyMatchesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMyMatchesRequest.ProtoReflect.Descriptor instead.
 func (*ListMyMatchesRequest) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{15}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{17}
 }
 
 type ListMyMatchesResponse struct {
@@ -767,7 +855,7 @@ type ListMyMatchesResponse struct {
 
 func (x *ListMyMatchesResponse) Reset() {
 	*x = ListMyMatchesResponse{}
-	mi := &file_proto_v1_match_proto_msgTypes[16]
+	mi := &file_proto_v1_match_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -779,7 +867,7 @@ func (x *ListMyMatchesResponse) String() string {
 func (*ListMyMatchesResponse) ProtoMessage() {}
 
 func (x *ListMyMatchesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_v1_match_proto_msgTypes[16]
+	mi := &file_proto_v1_match_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -792,7 +880,7 @@ func (x *ListMyMatchesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMyMatchesResponse.ProtoReflect.Descriptor instead.
 func (*ListMyMatchesResponse) Descriptor() ([]byte, []int) {
-	return file_proto_v1_match_proto_rawDescGZIP(), []int{16}
+	return file_proto_v1_match_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *ListMyMatchesResponse) GetMatches() []*Match {
@@ -818,6 +906,11 @@ const file_proto_v1_match_proto_rawDesc = "" +
 	"\x14RequestToJoinRequest\x12\x17\n" +
 	"\aride_id\x18\x01 \x01(\tR\x06rideId\">\n" +
 	"\x15RequestToJoinResponse\x12%\n" +
+	"\x05match\x18\x01 \x01(\v2\x0f.proto.v1.MatchR\x05match\"9\n" +
+	"\x18AcceptRideRequestRequest\x12\x1d\n" +
+	"\n" +
+	"request_id\x18\x01 \x01(\tR\trequestId\"B\n" +
+	"\x19AcceptRideRequestResponse\x12%\n" +
 	"\x05match\x18\x01 \x01(\v2\x0f.proto.v1.MatchR\x05match\"1\n" +
 	"\x14AcceptRequestRequest\x12\x19\n" +
 	"\bmatch_id\x18\x01 \x01(\tR\amatchId\">\n" +
@@ -845,9 +938,10 @@ const file_proto_v1_match_proto_rawDesc = "" +
 	"\amatches\x18\x01 \x03(\v2\x0f.proto.v1.MatchR\amatches\"\x16\n" +
 	"\x14ListMyMatchesRequest\"B\n" +
 	"\x15ListMyMatchesResponse\x12)\n" +
-	"\amatches\x18\x01 \x03(\v2\x0f.proto.v1.MatchR\amatches2\xaa\x05\n" +
+	"\amatches\x18\x01 \x03(\v2\x0f.proto.v1.MatchR\amatches2\x88\x06\n" +
 	"\fMatchService\x12P\n" +
-	"\rRequestToJoin\x12\x1e.proto.v1.RequestToJoinRequest\x1a\x1f.proto.v1.RequestToJoinResponse\x12P\n" +
+	"\rRequestToJoin\x12\x1e.proto.v1.RequestToJoinRequest\x1a\x1f.proto.v1.RequestToJoinResponse\x12\\\n" +
+	"\x11AcceptRideRequest\x12\".proto.v1.AcceptRideRequestRequest\x1a#.proto.v1.AcceptRideRequestResponse\x12P\n" +
 	"\rAcceptRequest\x12\x1e.proto.v1.AcceptRequestRequest\x1a\x1f.proto.v1.AcceptRequestResponse\x12P\n" +
 	"\rRejectRequest\x12\x1e.proto.v1.RejectRequestRequest\x1a\x1f.proto.v1.RejectRequestResponse\x12P\n" +
 	"\rCompleteMatch\x12\x1e.proto.v1.CompleteMatchRequest\x1a\x1f.proto.v1.CompleteMatchResponse\x12A\n" +
@@ -868,58 +962,63 @@ func file_proto_v1_match_proto_rawDescGZIP() []byte {
 	return file_proto_v1_match_proto_rawDescData
 }
 
-var file_proto_v1_match_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_proto_v1_match_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_proto_v1_match_proto_goTypes = []any{
 	(*Match)(nil),                      // 0: proto.v1.Match
 	(*RequestToJoinRequest)(nil),       // 1: proto.v1.RequestToJoinRequest
 	(*RequestToJoinResponse)(nil),      // 2: proto.v1.RequestToJoinResponse
-	(*AcceptRequestRequest)(nil),       // 3: proto.v1.AcceptRequestRequest
-	(*AcceptRequestResponse)(nil),      // 4: proto.v1.AcceptRequestResponse
-	(*RejectRequestRequest)(nil),       // 5: proto.v1.RejectRequestRequest
-	(*RejectRequestResponse)(nil),      // 6: proto.v1.RejectRequestResponse
-	(*CompleteMatchRequest)(nil),       // 7: proto.v1.CompleteMatchRequest
-	(*CompleteMatchResponse)(nil),      // 8: proto.v1.CompleteMatchResponse
-	(*GetMatchRequest)(nil),            // 9: proto.v1.GetMatchRequest
-	(*GetMatchResponse)(nil),           // 10: proto.v1.GetMatchResponse
-	(*ListMatchesByRideRequest)(nil),   // 11: proto.v1.ListMatchesByRideRequest
-	(*ListMatchesByRideResponse)(nil),  // 12: proto.v1.ListMatchesByRideResponse
-	(*ListMatchesByRiderRequest)(nil),  // 13: proto.v1.ListMatchesByRiderRequest
-	(*ListMatchesByRiderResponse)(nil), // 14: proto.v1.ListMatchesByRiderResponse
-	(*ListMyMatchesRequest)(nil),       // 15: proto.v1.ListMyMatchesRequest
-	(*ListMyMatchesResponse)(nil),      // 16: proto.v1.ListMyMatchesResponse
-	(*timestamppb.Timestamp)(nil),      // 17: google.protobuf.Timestamp
+	(*AcceptRideRequestRequest)(nil),   // 3: proto.v1.AcceptRideRequestRequest
+	(*AcceptRideRequestResponse)(nil),  // 4: proto.v1.AcceptRideRequestResponse
+	(*AcceptRequestRequest)(nil),       // 5: proto.v1.AcceptRequestRequest
+	(*AcceptRequestResponse)(nil),      // 6: proto.v1.AcceptRequestResponse
+	(*RejectRequestRequest)(nil),       // 7: proto.v1.RejectRequestRequest
+	(*RejectRequestResponse)(nil),      // 8: proto.v1.RejectRequestResponse
+	(*CompleteMatchRequest)(nil),       // 9: proto.v1.CompleteMatchRequest
+	(*CompleteMatchResponse)(nil),      // 10: proto.v1.CompleteMatchResponse
+	(*GetMatchRequest)(nil),            // 11: proto.v1.GetMatchRequest
+	(*GetMatchResponse)(nil),           // 12: proto.v1.GetMatchResponse
+	(*ListMatchesByRideRequest)(nil),   // 13: proto.v1.ListMatchesByRideRequest
+	(*ListMatchesByRideResponse)(nil),  // 14: proto.v1.ListMatchesByRideResponse
+	(*ListMatchesByRiderRequest)(nil),  // 15: proto.v1.ListMatchesByRiderRequest
+	(*ListMatchesByRiderResponse)(nil), // 16: proto.v1.ListMatchesByRiderResponse
+	(*ListMyMatchesRequest)(nil),       // 17: proto.v1.ListMyMatchesRequest
+	(*ListMyMatchesResponse)(nil),      // 18: proto.v1.ListMyMatchesResponse
+	(*timestamppb.Timestamp)(nil),      // 19: google.protobuf.Timestamp
 }
 var file_proto_v1_match_proto_depIdxs = []int32{
-	17, // 0: proto.v1.Match.created_at:type_name -> google.protobuf.Timestamp
+	19, // 0: proto.v1.Match.created_at:type_name -> google.protobuf.Timestamp
 	0,  // 1: proto.v1.RequestToJoinResponse.match:type_name -> proto.v1.Match
-	0,  // 2: proto.v1.AcceptRequestResponse.match:type_name -> proto.v1.Match
-	0,  // 3: proto.v1.RejectRequestResponse.match:type_name -> proto.v1.Match
-	0,  // 4: proto.v1.CompleteMatchResponse.match:type_name -> proto.v1.Match
-	0,  // 5: proto.v1.GetMatchResponse.match:type_name -> proto.v1.Match
-	0,  // 6: proto.v1.ListMatchesByRideResponse.matches:type_name -> proto.v1.Match
-	0,  // 7: proto.v1.ListMatchesByRiderResponse.matches:type_name -> proto.v1.Match
-	0,  // 8: proto.v1.ListMyMatchesResponse.matches:type_name -> proto.v1.Match
-	1,  // 9: proto.v1.MatchService.RequestToJoin:input_type -> proto.v1.RequestToJoinRequest
-	3,  // 10: proto.v1.MatchService.AcceptRequest:input_type -> proto.v1.AcceptRequestRequest
-	5,  // 11: proto.v1.MatchService.RejectRequest:input_type -> proto.v1.RejectRequestRequest
-	7,  // 12: proto.v1.MatchService.CompleteMatch:input_type -> proto.v1.CompleteMatchRequest
-	9,  // 13: proto.v1.MatchService.GetMatch:input_type -> proto.v1.GetMatchRequest
-	11, // 14: proto.v1.MatchService.ListMatchesByRide:input_type -> proto.v1.ListMatchesByRideRequest
-	13, // 15: proto.v1.MatchService.ListMatchesByRider:input_type -> proto.v1.ListMatchesByRiderRequest
-	15, // 16: proto.v1.MatchService.ListMyMatches:input_type -> proto.v1.ListMyMatchesRequest
-	2,  // 17: proto.v1.MatchService.RequestToJoin:output_type -> proto.v1.RequestToJoinResponse
-	4,  // 18: proto.v1.MatchService.AcceptRequest:output_type -> proto.v1.AcceptRequestResponse
-	6,  // 19: proto.v1.MatchService.RejectRequest:output_type -> proto.v1.RejectRequestResponse
-	8,  // 20: proto.v1.MatchService.CompleteMatch:output_type -> proto.v1.CompleteMatchResponse
-	10, // 21: proto.v1.MatchService.GetMatch:output_type -> proto.v1.GetMatchResponse
-	12, // 22: proto.v1.MatchService.ListMatchesByRide:output_type -> proto.v1.ListMatchesByRideResponse
-	14, // 23: proto.v1.MatchService.ListMatchesByRider:output_type -> proto.v1.ListMatchesByRiderResponse
-	16, // 24: proto.v1.MatchService.ListMyMatches:output_type -> proto.v1.ListMyMatchesResponse
-	17, // [17:25] is the sub-list for method output_type
-	9,  // [9:17] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	0,  // 2: proto.v1.AcceptRideRequestResponse.match:type_name -> proto.v1.Match
+	0,  // 3: proto.v1.AcceptRequestResponse.match:type_name -> proto.v1.Match
+	0,  // 4: proto.v1.RejectRequestResponse.match:type_name -> proto.v1.Match
+	0,  // 5: proto.v1.CompleteMatchResponse.match:type_name -> proto.v1.Match
+	0,  // 6: proto.v1.GetMatchResponse.match:type_name -> proto.v1.Match
+	0,  // 7: proto.v1.ListMatchesByRideResponse.matches:type_name -> proto.v1.Match
+	0,  // 8: proto.v1.ListMatchesByRiderResponse.matches:type_name -> proto.v1.Match
+	0,  // 9: proto.v1.ListMyMatchesResponse.matches:type_name -> proto.v1.Match
+	1,  // 10: proto.v1.MatchService.RequestToJoin:input_type -> proto.v1.RequestToJoinRequest
+	3,  // 11: proto.v1.MatchService.AcceptRideRequest:input_type -> proto.v1.AcceptRideRequestRequest
+	5,  // 12: proto.v1.MatchService.AcceptRequest:input_type -> proto.v1.AcceptRequestRequest
+	7,  // 13: proto.v1.MatchService.RejectRequest:input_type -> proto.v1.RejectRequestRequest
+	9,  // 14: proto.v1.MatchService.CompleteMatch:input_type -> proto.v1.CompleteMatchRequest
+	11, // 15: proto.v1.MatchService.GetMatch:input_type -> proto.v1.GetMatchRequest
+	13, // 16: proto.v1.MatchService.ListMatchesByRide:input_type -> proto.v1.ListMatchesByRideRequest
+	15, // 17: proto.v1.MatchService.ListMatchesByRider:input_type -> proto.v1.ListMatchesByRiderRequest
+	17, // 18: proto.v1.MatchService.ListMyMatches:input_type -> proto.v1.ListMyMatchesRequest
+	2,  // 19: proto.v1.MatchService.RequestToJoin:output_type -> proto.v1.RequestToJoinResponse
+	4,  // 20: proto.v1.MatchService.AcceptRideRequest:output_type -> proto.v1.AcceptRideRequestResponse
+	6,  // 21: proto.v1.MatchService.AcceptRequest:output_type -> proto.v1.AcceptRequestResponse
+	8,  // 22: proto.v1.MatchService.RejectRequest:output_type -> proto.v1.RejectRequestResponse
+	10, // 23: proto.v1.MatchService.CompleteMatch:output_type -> proto.v1.CompleteMatchResponse
+	12, // 24: proto.v1.MatchService.GetMatch:output_type -> proto.v1.GetMatchResponse
+	14, // 25: proto.v1.MatchService.ListMatchesByRide:output_type -> proto.v1.ListMatchesByRideResponse
+	16, // 26: proto.v1.MatchService.ListMatchesByRider:output_type -> proto.v1.ListMatchesByRiderResponse
+	18, // 27: proto.v1.MatchService.ListMyMatches:output_type -> proto.v1.ListMyMatchesResponse
+	19, // [19:28] is the sub-list for method output_type
+	10, // [10:19] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_proto_v1_match_proto_init() }
@@ -933,7 +1032,7 @@ func file_proto_v1_match_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_v1_match_proto_rawDesc), len(file_proto_v1_match_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   17,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

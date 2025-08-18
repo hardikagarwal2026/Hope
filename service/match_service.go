@@ -8,6 +8,8 @@ import (
 
 	"hope/db"
 	"hope/repository"
+
+	"github.com/google/uuid"
 )
 
 var (
@@ -17,6 +19,7 @@ var (
 
 type MatchService interface {
 	RequestToJoin(ctx context.Context, match *db.Match) error
+	AcceptRideRequest(ctx context.Context, driverID, requestID string) (*db.Match, error)
 	AcceptRequest(ctx context.Context, callerID, matchID string) error
 	RejectRequest(ctx context.Context, callerID, matchID string) error
 	CompleteMatch(ctx context.Context, matchID string) error
@@ -39,7 +42,7 @@ func (s matchService) RequestToJoin(ctx context.Context, match *db.Match) error 
 	if match == nil {
 		return errMissingFields
 	}
-	
+
 	match.RiderID = strings.TrimSpace(match.RiderID)
 	match.RideID = strings.TrimSpace(match.RideID)
 
@@ -61,6 +64,55 @@ func (s matchService) RequestToJoin(ctx context.Context, match *db.Match) error 
 	}
 
 	return s.matchrepo.Create(ctx, match)
+}
+
+func (s matchService) AcceptRideRequest(ctx context.Context, driverID, requestID string) (*db.Match, error) {
+	driverID = strings.TrimSpace(driverID)
+	requestID = strings.TrimSpace(requestID)
+	if driverID == "" || requestID == "" {
+		return nil, errors.New("missing driver or request")
+	}
+	req, err := s.riderequestrepo.FindByID(ctx, requestID)
+	if err != nil || req == nil || req.ID == "" {
+		return nil, errors.New("ride request not found")
+	}
+	if req.Status != "active" {
+		return nil, errors.New("request not active")
+	}
+	if req.UserID == driverID {
+		return nil, errors.New("cannot accept own request")
+	}
+
+	offer := &db.RideOffer{
+		ID:       uuid.New().String(),
+		DriverID: driverID,
+		FromGeo:  req.FromGeo,
+		ToGeo:    req.ToGeo,
+		Fare:     0,
+		Time:     req.Time,
+		Seats:    max(1, req.Seats),
+		Status:   "matched",
+	}
+
+	match := &db.Match{
+		ID:        uuid.New().String(),
+		RiderID:   req.UserID,
+		DriverID:  driverID,
+		RideID:    offer.ID,
+		Status:    "accepted",
+		CreatedAt: time.Now().UTC(),
+	}
+
+	if err := s.rideofferepo.Create(ctx, offer); err != nil {
+		return nil, err
+	}
+	if err := s.matchrepo.Create(ctx, match); err != nil {
+		return nil, err
+	}
+	if err := s.riderequestrepo.UpdateStatus(ctx, req.ID, "matched"); err != nil {
+		return nil, err
+	}
+	return match, nil
 }
 
 func (s matchService) AcceptRequest(ctx context.Context, callerID, matchID string) error {

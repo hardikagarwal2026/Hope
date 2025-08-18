@@ -70,7 +70,6 @@ func (s userService) GetUserByID(ctx context.Context, id string) (*db.User, erro
 	return u, nil
 }
 
-
 func (s userService) GetUserByEmail(ctx context.Context, email string) (*db.User, error) {
 	email = strings.TrimSpace(strings.ToLower(email))
 	if email == "" {
@@ -85,7 +84,6 @@ func (s userService) GetUserByEmail(ctx context.Context, email string) (*db.User
 	}
 	return u, nil
 }
-
 
 func (s userService) UpdateUser(ctx context.Context, user *db.User) error {
 	if user == nil || strings.TrimSpace(user.ID) == "" {

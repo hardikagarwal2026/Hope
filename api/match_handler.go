@@ -68,6 +68,21 @@ func (h *MatchHandler) RequestToJoin(ctx context.Context, req *pb.RequestToJoinR
 	return &pb.RequestToJoinResponse{Match: toMatchPB(m)}, nil
 }
 
+func (h *MatchHandler) AcceptRideRequest(ctx context.Context, req *pb.AcceptRideRequestRequest) (*pb.AcceptRideRequestResponse, error) {
+	if req == nil || strings.TrimSpace(req.GetRequestId()) == "" {
+		return nil, status.Error(codes.InvalidArgument, "request_id is required")
+	}
+	driverID, ok := middleware.UserIDFromContext(ctx)
+	if !ok || driverID == "" {
+		return nil, status.Error(codes.Unauthenticated, "missing auth")
+	}
+	m, err := h.matchService.AcceptRideRequest(ctx, driverID, req.GetRequestId())
+	if err != nil || m == nil || m.ID == "" {
+		return nil, status.Error(codes.NotFound, "match not created")
+	}
+	return &pb.AcceptRideRequestResponse{Match: toMatchPB(m)}, nil
+}
+
 func (h *MatchHandler) AcceptRequest(ctx context.Context, req *pb.AcceptRequestRequest) (*pb.AcceptRequestResponse, error) {
 	if req == nil || strings.TrimSpace(req.GetMatchId()) == "" {
 		return nil, status.Error(codes.InvalidArgument, "match_id is required")

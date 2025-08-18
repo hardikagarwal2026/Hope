@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 	"errors"
-	"strings"
-	"time"
+	"github.com/google/uuid"
 	"hope/db"
 	"hope/repository"
-	"github.com/google/uuid"
+	"strings"
+	"time"
 )
 
 var (
@@ -67,7 +67,7 @@ func (s rideService) CreateOffer(ctx context.Context, offer *db.RideOffer) error
 	if strings.TrimSpace(offer.Status) == "" {
 		offer.Status = "active"
 	}
-	
+
 	offer.ID = uuid.New().String()
 
 	driver, _ := s.userrepo.FindByID(ctx, offer.DriverID)
@@ -91,7 +91,6 @@ func (s rideService) GetOfferByID(ctx context.Context, id string) (*db.RideOffer
 	return o, nil
 }
 
-
 func (s rideService) UpdateOffer(ctx context.Context, offer *db.RideOffer) error {
 	if offer == nil || strings.TrimSpace(offer.ID) == "" {
 		return errOfferNotFound
@@ -104,7 +103,7 @@ func (s rideService) UpdateOffer(ctx context.Context, offer *db.RideOffer) error
 	if offer.Seats > 0 {
 		current.Seats = offer.Seats
 	}
-	
+
 	if strings.TrimSpace(offer.Status) != "" {
 		current.Status = strings.TrimSpace(offer.Status)
 	}
@@ -144,7 +143,7 @@ func (s rideService) CreateRequest(ctx context.Context, req *db.RideRequest) err
 	if strings.TrimSpace(req.Status) == "" {
 		req.Status = "active"
 	}
-	
+
 	req.ID = uuid.New().String()
 
 	u, _ := s.userrepo.FindByID(ctx, req.UserID)

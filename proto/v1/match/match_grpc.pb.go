@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	MatchService_RequestToJoin_FullMethodName      = "/proto.v1.MatchService/RequestToJoin"
+	MatchService_AcceptRideRequest_FullMethodName  = "/proto.v1.MatchService/AcceptRideRequest"
 	MatchService_AcceptRequest_FullMethodName      = "/proto.v1.MatchService/AcceptRequest"
 	MatchService_RejectRequest_FullMethodName      = "/proto.v1.MatchService/RejectRequest"
 	MatchService_CompleteMatch_FullMethodName      = "/proto.v1.MatchService/CompleteMatch"
@@ -34,6 +35,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MatchServiceClient interface {
 	RequestToJoin(ctx context.Context, in *RequestToJoinRequest, opts ...grpc.CallOption) (*RequestToJoinResponse, error)
+	AcceptRideRequest(ctx context.Context, in *AcceptRideRequestRequest, opts ...grpc.CallOption) (*AcceptRideRequestResponse, error)
 	AcceptRequest(ctx context.Context, in *AcceptRequestRequest, opts ...grpc.CallOption) (*AcceptRequestResponse, error)
 	RejectRequest(ctx context.Context, in *RejectRequestRequest, opts ...grpc.CallOption) (*RejectRequestResponse, error)
 	CompleteMatch(ctx context.Context, in *CompleteMatchRequest, opts ...grpc.CallOption) (*CompleteMatchResponse, error)
@@ -55,6 +57,16 @@ func (c *matchServiceClient) RequestToJoin(ctx context.Context, in *RequestToJoi
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RequestToJoinResponse)
 	err := c.cc.Invoke(ctx, MatchService_RequestToJoin_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *matchServiceClient) AcceptRideRequest(ctx context.Context, in *AcceptRideRequestRequest, opts ...grpc.CallOption) (*AcceptRideRequestResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AcceptRideRequestResponse)
+	err := c.cc.Invoke(ctx, MatchService_AcceptRideRequest_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -136,6 +148,7 @@ func (c *matchServiceClient) ListMyMatches(ctx context.Context, in *ListMyMatche
 // for forward compatibility.
 type MatchServiceServer interface {
 	RequestToJoin(context.Context, *RequestToJoinRequest) (*RequestToJoinResponse, error)
+	AcceptRideRequest(context.Context, *AcceptRideRequestRequest) (*AcceptRideRequestResponse, error)
 	AcceptRequest(context.Context, *AcceptRequestRequest) (*AcceptRequestResponse, error)
 	RejectRequest(context.Context, *RejectRequestRequest) (*RejectRequestResponse, error)
 	CompleteMatch(context.Context, *CompleteMatchRequest) (*CompleteMatchResponse, error)
@@ -155,6 +168,9 @@ type UnimplementedMatchServiceServer struct{}
 
 func (UnimplementedMatchServiceServer) RequestToJoin(context.Context, *RequestToJoinRequest) (*RequestToJoinResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RequestToJoin not implemented")
+}
+func (UnimplementedMatchServiceServer) AcceptRideRequest(context.Context, *AcceptRideRequestRequest) (*AcceptRideRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AcceptRideRequest not implemented")
 }
 func (UnimplementedMatchServiceServer) AcceptRequest(context.Context, *AcceptRequestRequest) (*AcceptRequestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AcceptRequest not implemented")
@@ -212,6 +228,24 @@ func _MatchService_RequestToJoin_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MatchServiceServer).RequestToJoin(ctx, req.(*RequestToJoinRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MatchService_AcceptRideRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AcceptRideRequestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MatchServiceServer).AcceptRideRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MatchService_AcceptRideRequest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MatchServiceServer).AcceptRideRequest(ctx, req.(*AcceptRideRequestRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -352,6 +386,10 @@ var MatchService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RequestToJoin",
 			Handler:    _MatchService_RequestToJoin_Handler,
+		},
+		{
+			MethodName: "AcceptRideRequest",
+			Handler:    _MatchService_AcceptRideRequest_Handler,
 		},
 		{
 			MethodName: "AcceptRequest",
